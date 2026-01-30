@@ -22,7 +22,9 @@
 
 ## Project description
 
-10xCards is a web app for medical students to quickly create and study flashcards. It supports AI-assisted flashcard generation from pasted text, manual flashcard creation, and full flashcard management (browse, edit, delete). Each flashcard is scheduled for review using a spaced-repetition algorithm, with cards stored in a question/answer or front/back format. The MVP prioritizes fast AI generation with accurate, editable content and automated review scheduling.
+10xCards is a web app for medical students to quickly create and study flashcards. It supports AI-assisted flashcard generation from pasted text, manual flashcard creation, and flashcard management (browse, edit, delete). Each flashcard is scheduled for review using a spaced-repetition algorithm, with cards stored in a question/answer or front/back format.
+
+The MVP prioritizes fast AI generation with editable content and automated review scheduling.
 
 Additional documentation:
 
@@ -45,11 +47,11 @@ Backend:
 
 AI:
 
-- Openrouter.ai (multi-model access and cost controls)
+- OpenRouter.ai (multi-model access and cost controls)
 
 CI/CD & Hosting:
 
-- GitHub Actions
+- GitHub Actions (pull request checks)
 - DigitalOcean (Docker-based deployment)
 
 ## Getting started locally
@@ -62,123 +64,103 @@ Prerequisites:
 Setup:
 
 1. Install dependencies:
-   ```bash
    npm install
-   ```
 2. Start the development server:
-   ```bash
    npm run dev
-   ```
 3. Build for production:
-   ```bash
    npm run build
-   ```
 4. Preview the production build locally:
-   ```bash
    npm run preview
-   ```
 
 ## Available scripts
 
 Development:
 
-- `npm run dev` — start Astro dev server
-- `npm run build` — build the production bundle
-- `npm run preview` — preview the production build
-- `npm run astro` — run the Astro CLI
+- npm run dev — start Astro dev server
+- npm run build — build the production bundle
+- npm run preview — preview the production build
+- npm run astro — run the Astro CLI
 
 Code Quality:
 
-- `npm run lint` — run ESLint
-- `npm run lint:fix` — fix ESLint issues
-- `npm run format` — format files with Prettier
+- npm run lint — run ESLint
+- npm run lint:fix — fix ESLint issues
+- npm run format — format files with Prettier
 
 Testing:
 
-- `npm test` — run all unit tests
-- `npm test -- --watch` — run tests in watch mode
-- `npm run test:ui` — open Vitest UI in browser
-- `npm run test:coverage` — generate coverage report
+- npm test — run all unit tests
+- npm test -- --watch — run tests in watch mode
+- npm run test:ui — open Vitest UI in browser
+- npm run test:coverage — generate coverage report
 
 ## Testing
 
-The project includes comprehensive unit tests covering critical business logic, algorithms, and components.
+The project includes unit tests covering critical business logic and algorithms.
 
-### Quick Start
+Quick start:
 
-```bash
-# Run all tests
-npm test
+- npm test
+- npm test -- --watch
+- npm run test:ui
+- npm run test:coverage
 
-# Watch mode (auto-reload on changes)
-npm test -- --watch
+Test coverage:
 
-# UI mode (visual test runner)
-npm run test:ui
+- 43 unit tests across 3 test files
+- Coverage includes:
+  - SM-2 spaced repetition algorithm
+  - flashcard generation flow and error handling
+  - review storage (sessionStorage)
 
-# Coverage report
-npm run test:coverage
-```
+Priority areas:
 
-### Test Coverage
+- Priority 1 (Critical): 20 tests — SM-2 algorithm
+- Priority 2 (High): 5 tests — generation flow and errors
+- Priority 3 (Medium): 18 tests — review storage
 
-- **52 unit tests** across 3 test files
-- Testy pokrywają kluczową logikę biznesową (algorytm SM-2, generacja, storage)
+Documentation:
 
-### Priority Areas
+- TESTING_SETUP.md
+- TEST_SUMMARY.md
+- src/test/README.md
 
-1. **Priority 1 (Critical):** 20 tests
-   - SM-2 spaced repetition algorithm
+Technologies:
 
-2. **Priority 2 (High):** 14 tests
-   - Flashcard generation helpers
-
-3. **Priority 3 (Medium):** 18 tests
-   - Review storage (sessionStorage)
-
-### Documentation
-
-- **Setup Guide:** [`TESTING_SETUP.md`](./TESTING_SETUP.md)
-- **Test Summary:** [`TEST_SUMMARY.md`](./TEST_SUMMARY.md)
-- **Detailed Docs:** [`src/test/README.md`](./src/test/README.md)
-
-### Technologies
-
-- **Vitest** - Fast unit test framework
-- **React Testing Library** - Testing React hooks
-- **jsdom** - DOM environment for tests
+- Vitest
+- React Testing Library (available)
+- jsdom
 
 ## Project scope
 
-In scope for MVP (2–3 sprints):
+In scope for MVP:
 
-- AI flashcard generation from pasted text (limit 1000 chars, max 30 seconds)
+- AI flashcard generation from pasted text
 - Manual flashcard creation
-- Flashcard management: list, inline edit, delete
-- User accounts: sign up, login, logout, password reset
-- Spaced repetition scheduling and review flow
+- Flashcard management (list, edit, delete)
+- User accounts and authentication
+- Spaced repetition review flow
 - Languages: PL and EN
 
 Out of scope for MVP:
 
-- Decks, categories, advanced filtering
-- Bulk accept/reject and regeneration of single cards
-- Source preview, error reporting, quality telemetry
-- Marketplace, sharing, and external imports
-- Native mobile apps
-- Payments and subscriptions
-- Advanced roles and multi-user authorization
+- Decks and categories
+- Bulk operations
+- Marketplace and sharing
+- Mobile apps
+- Payments
+- Advanced authorization
 
 Operational constraints and risks:
 
-- Input limit: 1000 characters; generation time: up to 30 seconds
-- Quality risk: AI content accuracy requires fast inline editing
-- UX risk: long generation needs clear loading and retry states
+- AI latency and limits depend on provider
+- AI output requires user verification
+- Long generation needs clear loading and retry states
 
 ## Project status
 
-MVP is defined in the PRD; implementation progress is not specified in the provided files.
+MVP is defined in the PRD; implementation is in progress.
 
 ## License
 
-License has not been specified yet. Add a license file and update this section when decided.
+License has not been specified yet.
