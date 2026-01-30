@@ -11,9 +11,6 @@ import {
   isActiveStatus,
   isRetryableStatus,
 } from "@/components/generate/generationStatus";
-import type { GenerationRequestDetailsResponseDTO } from "@/types";
-
-type GenerationStatus = GenerationRequestDetailsResponseDTO["status"];
 
 const buildDetailsHref = (requestId: string) => `/generation-requests/${requestId}`;
 

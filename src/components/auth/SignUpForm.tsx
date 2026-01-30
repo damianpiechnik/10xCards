@@ -347,7 +347,9 @@ const SignUpForm = () => {
 
         // Status 201: Konto utworzone i użytkownik zalogowany
         if (response.status === 201) {
-          const authResponse = (await response.json()) as AuthSignUpCommand & { session: { access_token: string; refresh_token: string } };
+          const authResponse = (await response.json()) as AuthSignUpCommand & {
+            session: { access_token: string; refresh_token: string };
+          };
           const { error } = await supabaseClient.auth.setSession({
             access_token: authResponse.session.access_token,
             refresh_token: authResponse.session.refresh_token,

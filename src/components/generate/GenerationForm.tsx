@@ -271,17 +271,30 @@ const LoadingState = ({ isSubmitting, isRedirecting }: { isSubmitting: boolean; 
     return null;
   }
 
-  const message = isRedirecting ? "Przekierowujemy do podglądu generacji." : "Tworzymy zlecenie generacji, to może potrwać kilka sekund.";
+  const message = isRedirecting
+    ? "Przekierowujemy do podglądu generacji."
+    : "Tworzymy zlecenie generacji, to może potrwać kilka sekund.";
 
   return (
     <div className="flex items-center gap-2 text-xs text-muted-foreground" role="status" aria-live="polite">
-      <span className="inline-flex h-3 w-3 animate-spin rounded-full border-2 border-muted-foreground/40 border-t-muted-foreground" aria-hidden="true" />
+      <span
+        className="inline-flex h-3 w-3 animate-spin rounded-full border-2 border-muted-foreground/40 border-t-muted-foreground"
+        aria-hidden="true"
+      />
       <span>{message}</span>
     </div>
   );
 };
 
-const SubmitButton = ({ disabled, isSubmitting, isRedirecting }: { disabled: boolean; isSubmitting: boolean; isRedirecting: boolean }) => {
+const SubmitButton = ({
+  disabled,
+  isSubmitting,
+  isRedirecting,
+}: {
+  disabled: boolean;
+  isSubmitting: boolean;
+  isRedirecting: boolean;
+}) => {
   const label = isRedirecting ? "Przekierowanie..." : isSubmitting ? "Tworzenie zlecenia..." : "Generuj fiszki";
 
   return (
@@ -387,7 +400,9 @@ const GenerationForm = () => {
 
     setFormState((prev) => {
       const nextError = prev.fieldErrors.language ? validateLanguage(nextValue) : null;
-      const nextErrors = nextError ? { ...prev.fieldErrors, language: nextError } : { ...prev.fieldErrors, language: undefined };
+      const nextErrors = nextError
+        ? { ...prev.fieldErrors, language: nextError }
+        : { ...prev.fieldErrors, language: undefined };
       return {
         ...prev,
         language: nextValue,
@@ -519,7 +534,12 @@ const GenerationForm = () => {
               onBlur={handleLanguageBlur}
             />
           </div>
-          <ModelField id={modelId} value={formState.model ?? ""} disabled={isFieldDisabled} onChange={handleModelChange} />
+          <ModelField
+            id={modelId}
+            value={formState.model ?? ""}
+            disabled={isFieldDisabled}
+            onChange={handleModelChange}
+          />
           {formState.formError ? <FormErrorBanner message={formState.formError} /> : null}
           {formState.formSuccess ? <FormSuccessBanner message={formState.formSuccess} /> : null}
           <SubmitButton disabled={isSubmitDisabled} isSubmitting={isSubmitting} isRedirecting={isRedirecting} />

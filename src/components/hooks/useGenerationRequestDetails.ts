@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { GenerationRequestDetailsResponseDTO } from "@/types";
 
-type RequestError = {
+interface RequestError {
   message: string;
   status?: number;
-};
+}
 
 const getErrorMessage = async (response: Response): Promise<RequestError> => {
   if (response.status === 401) {

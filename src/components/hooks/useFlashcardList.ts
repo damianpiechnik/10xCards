@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { FlashcardDTO, FlashcardListQuery, FlashcardListResponseDTO } from "@/types";
 
-type RequestError = {
+interface RequestError {
   message: string;
   status?: number;
-};
+}
 
 const getErrorMessage = async (response: Response): Promise<RequestError> => {
   if (response.status === 401) {
@@ -32,15 +32,15 @@ const getErrorMessage = async (response: Response): Promise<RequestError> => {
   return { message: "Nie udało się pobrać listy fiszek.", status: response.status };
 };
 
-type ListState = {
+interface ListState {
   items: FlashcardDTO[];
   nextCursor: string | null;
-};
+}
 
-type FetchOptions = {
+interface FetchOptions {
   cursor?: string | null;
   append?: boolean;
-};
+}
 
 const buildQuery = (query: FlashcardListQuery, cursor?: string | null) => {
   const params = new URLSearchParams();

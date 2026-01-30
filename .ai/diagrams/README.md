@@ -82,6 +82,7 @@ Ten folder zawiera diagramy Mermaid dokumentujące architekturę aplikacji 10xCa
 ### Struktura diagramów
 
 Każdy diagram zawiera:
+
 1. **Diagram Mermaid** - wizualizacja architektury
 2. **Opis komponentów** - szczegółowe informacje o każdym elemencie
 3. **Przepływy** - jak użytkownik/dane przechodzą przez system
@@ -118,6 +119,7 @@ Dla programistów pracujących nad konkretną funkcją:
 ## Narzędzia do wyświetlania
 
 Diagramy Mermaid można wyświetlać:
+
 - GitHub/GitLab - natywne wsparcie
 - VS Code - rozszerzenie "Markdown Preview Mermaid Support"
 - Online: [mermaid.live](https://mermaid.live/)

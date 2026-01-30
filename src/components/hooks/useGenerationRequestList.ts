@@ -2,20 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { GenerationRequestListResponseDTO, GenerationRequestSummaryDTO } from "@/types";
 
-type RequestError = {
+interface RequestError {
   message: string;
   status?: number;
-};
+}
 
-type ListState = {
+interface ListState {
   items: GenerationRequestSummaryDTO[];
   nextCursor: string | null;
-};
+}
 
-type FetchOptions = {
+interface FetchOptions {
   cursor?: string | null;
   append?: boolean;
-};
+}
 
 const DEFAULT_LIMIT = 20;
 

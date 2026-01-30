@@ -5,15 +5,21 @@
 Projekt zawiera kompleksowy zestaw testów jednostkowych podzielony na 3 priorytety:
 
 ### Priorytet 1 (Natychmiast)
+
 Krytyczny algorytm:
+
 - ✅ `updateSrs.test.ts` - Algorytm SM-2 do spaced repetition
 
 ### Priorytet 2 (Wysoki)
+
 Logika generacji:
+
 - ✅ `completeGenerationRequest.test.ts` - Funkcje pomocnicze i fallback dla generacji
 
 ### Priorytet 3 (Średni)
+
 Komponenty i hooki z logiką biznesową:
+
 - ✅ `reviewStorage.test.ts` - Storage dla kolejki powtórek
 - ✅ `useReviewQueue.test.ts` - Hook do pobierania kolejki
 - ✅ `useReviewSubmit.test.ts` - Hook do wysyłania ocen
@@ -21,31 +27,37 @@ Komponenty i hooki z logiką biznesową:
 ## Uruchamianie Testów
 
 ### Wszystkie testy
+
 ```bash
 npm test
 ```
 
 ### Tryb watch (dla development)
+
 ```bash
 npm test -- --watch
 ```
 
 ### UI mode (wizualna nawigacja)
+
 ```bash
 npm run test:ui
 ```
 
 ### Coverage
+
 ```bash
 npm run test:coverage
 ```
 
 ### Konkretny plik
+
 ```bash
 npm test updateSrs.test.ts
 ```
 
 ### Filtrowanie po nazwie testu
+
 ```bash
 npm test -- -t "powinien zresetować repetition"
 ```
@@ -72,6 +84,7 @@ it("powinien opisać co robi", () => {
 ### 1. Testowanie Warunków Brzegowych
 
 Każda funkcja powinna być przetestowana z:
+
 - Wartościami granicznymi (min, max)
 - Wartościami null/undefined
 - Pustymi tablicami/obiektami
@@ -111,6 +124,7 @@ beforeEach(() => {
 ## Coverage
 
 Testy pokrywają 100% kluczowych modułów:
+
 - `updateSrs.ts` - ~95% coverage
 - `completeGenerationRequest.ts` - 100% coverage
 - `reviewStorage.ts` - 100% coverage
@@ -118,6 +132,7 @@ Testy pokrywają 100% kluczowych modułów:
 ## Kluczowe Przypadki Testowe
 
 ### updateSrs.ts
+
 - Algorytm SM-2 dla różnych ocen (0-5)
 - Reset repetition dla ocen < 3
 - Obliczanie ease_factor z minimum 1.3
@@ -125,6 +140,7 @@ Testy pokrywają 100% kluczowych modułów:
 - Ustawianie due_at na podstawie interval
 
 ### completeGenerationRequest.ts
+
 - Normalizacja tekstu
 - Zapewnienie minimalnej długości (2 znaki)
 - Obcinanie długich tekstów (max 2000)
@@ -133,12 +149,14 @@ Testy pokrywają 100% kluczowych modułów:
 - Fallback do lokalnej generacji gdy AI zawiedzie
 
 ### reviewStorage.ts
+
 - Zapis i odczyt z sessionStorage
 - Obsługa błędów storage
 - Walidacja typu danych (musi być array)
 - Czyszczenie storage
 
 ### useReviewQueue.ts
+
 - Inicjalizacja bez wykonywania zapytania (enabled=false)
 - Pobieranie kolejki z API
 - Obsługa błędów HTTP (401, 429, 5xx)
@@ -146,6 +164,7 @@ Testy pokrywają 100% kluczowych modułów:
 - Czyszczenie danych przy zmianie zależności
 
 ### useReviewSubmit.ts
+
 - Wysyłanie ocen do API
 - Stan isSubmitting podczas wysyłania
 - Obsługa błędów HTTP
@@ -155,16 +174,19 @@ Testy pokrywają 100% kluczowych modułów:
 ## Debugging Testów
 
 ### Verbose mode
+
 ```bash
 npm test -- --reporter=verbose
 ```
 
 ### Konkretny test w watch mode
+
 ```bash
 npm test -- --watch updateSrs.test.ts
 ```
 
 ### Zobacz console.log w testach
+
 ```bash
 npm test -- --reporter=verbose
 ```
@@ -172,6 +194,7 @@ npm test -- --reporter=verbose
 ## Struktura Mocków
 
 ### Supabase Client Mock
+
 ```typescript
 const createMockSupabase = () => ({
   from: vi.fn().mockReturnThis(),
@@ -184,6 +207,7 @@ const createMockSupabase = () => ({
 ```
 
 ### Fetch Mock
+
 ```typescript
 global.fetch = vi.fn().mockResolvedValue({
   ok: true,
@@ -192,6 +216,7 @@ global.fetch = vi.fn().mockResolvedValue({
 ```
 
 ### SessionStorage Mock
+
 Setup w `src/test/setup.ts` - automatycznie dostępny w każdym teście.
 
 ## Dodawanie Nowych Testów
@@ -206,6 +231,7 @@ Setup w `src/test/setup.ts` - automatycznie dostępny w każdym teście.
 ## Znane Problemy
 
 ### Timers
+
 Dla testów używających `setTimeout`/`setInterval`, użyj fake timers:
 
 ```typescript
@@ -222,6 +248,7 @@ vi.advanceTimersByTime(1000);
 ```
 
 ### React Hooks
+
 Dla testowania hooków używamy `@testing-library/react`:
 
 ```typescript

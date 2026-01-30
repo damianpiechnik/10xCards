@@ -8,7 +8,7 @@ Celem modułu jest zapewnienie bezpiecznego dostępu do prywatnych danych użytk
 
 ### Wyjaśnienie zakresu autentykacji
 
-**WAŻNE**: Zgodnie z wymaganiami funkcjonalnymi PRD oraz modelem danych (wszystkie tabele wymagają `user_id`), **wszystkie funkcje aplikacji wymagają autentykacji**. W aplikacji nie ma funkcjonalności dostępnych dla niezalogowanych użytkowników. 
+**WAŻNE**: Zgodnie z wymaganiami funkcjonalnymi PRD oraz modelem danych (wszystkie tabele wymagają `user_id`), **wszystkie funkcje aplikacji wymagają autentykacji**. W aplikacji nie ma funkcjonalności dostępnych dla niezalogowanych użytkowników.
 
 Użytkownik niezalogowany ma dostęp wyłącznie do widoków autentykacji (`/auth/sign-up`, `/auth/sign-in`, `/auth/reset-password`). Każda próba dostępu do funkcjonalności aplikacji (`/library`, `/generate`, `/reviews`) bez aktywnej sesji skutkuje automatycznym przekierowaniem na stronę logowania z zachowaniem informacji o docelowej lokalizacji.
 
@@ -29,6 +29,7 @@ Aplikacja działa w dwóch trybach widocznych dla użytkownika:
 #### 1.2.1 Widoki publiczne (niezalogowany)
 
 **Rejestracja** (`/auth/sign-up`)
+
 - **Cel**: utworzenie nowego konta użytkownika z użyciem adresu email i hasła.
 - **Kluczowe elementy UI**:
   - Formularz rejestracji z polami: email, hasło, potwierdzenie hasła.
@@ -54,6 +55,7 @@ Aplikacja działa w dwóch trybach widocznych dla użytkownika:
   - Przy błędzie użytkownik pozostaje na stronie, wartości pól są zachowane, a komunikat błędu wyświetla się w `FormErrorBanner` nad przyciskiem submit.
 
 **Logowanie** (`/auth/sign-in`)
+
 - **Cel**: uwierzytelnienie istniejącego użytkownika i uzyskanie dostępu do prywatnych funkcji aplikacji.
 - **Kluczowe elementy UI**:
   - Formularz logowania z polami: email, hasło.
@@ -78,6 +80,7 @@ Aplikacja działa w dwóch trybach widocznych dla użytkownika:
   - Przy błędzie komunikat wyświetla się w `FormErrorBanner`, dane w polach są zachowane, focus ustawiany jest na pierwszym błędnym polu.
 
 **Reset hasła - inicjacja** (`/auth/reset-password`)
+
 - **Cel**: zainicjowanie procesu odzyskiwania hasła przez wysłanie linku resetującego na adres email użytkownika.
 - **Kluczowe elementy UI**:
   - Formularz z polem email.
@@ -101,6 +104,7 @@ Aplikacja działa w dwóch trybach widocznych dla użytkownika:
   - Użytkownik może kliknąć „Wróć do logowania" i wrócić na `/auth/sign-in`.
 
 **Reset hasła - potwierdzenie** (`/auth/reset-password/confirm`)
+
 - **Cel**: ustawienie nowego hasła po kliknięciu w link z emaila.
 - **Kluczowe elementy UI**:
   - Formularz z polami: nowe hasło, potwierdzenie nowego hasła.
@@ -127,6 +131,7 @@ Aplikacja działa w dwóch trybach widocznych dla użytkownika:
 Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są chronione przez middleware Astro, które weryfikuje sesję użytkownika. W przypadku braku sesji użytkownik jest przekierowany na `/auth/sign-in` z parametrem `redirect` wskazującym na docelową lokalizację.
 
 **Główny layout z nawigacją** (`Layout.astro`)
+
 - **Cel**: zapewnienie spójnej struktury dla widoków zalogowanego użytkownika.
 - **Kluczowe elementy UI**:
   - Główna nawigacja (tabs): `Biblioteka`, `Generuj`, `Powtórki`.
@@ -141,24 +146,28 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - W razie błędu wylogowania (401/500) wyświetlany jest toast z komunikatem „Nie udało się wylogować. Spróbuj ponownie."
 
 **Biblioteka** (`/library`)
+
 - **Rozszerzenia dotyczące autentykacji**:
   - Widok wymaga uwierzytelnienia (middleware Astro sprawdza sesję).
   - Zapytania do API (`GET /api/flashcards`) wysyłane są z Bearer tokenem z sesji Supabase.
   - Przy błędzie 401 Unauthorized użytkownik widzi banner „Twoja sesja wygasła. Zaloguj się ponownie." i przycisk „Zaloguj się" przekierowujący na `/auth/sign-in` z parametrem `redirect=/library`.
 
 **Generuj** (`/generate`)
+
 - **Rozszerzenia dotyczące autentykacji**:
   - Widok wymaga uwierzytelnienia.
   - Zapytania do API (`POST /api/generation-requests`) wysyłane są z Bearer tokenem.
   - Przy 401 Unauthorized analogiczny banner jak w bibliotece.
 
 **Powtórki** (`/reviews`)
+
 - **Rozszerzenia dotyczące autentykacji**:
   - Widok wymaga uwierzytelnienia.
   - Zapytania do API (`GET /api/reviews/queue`, `POST /api/reviews/{id}`) wysyłane są z Bearer tokenem.
   - Przy 401 Unauthorized analogiczny banner jak w bibliotece.
 
 **Profil** (`/profile`) — **[OPCJONALNY, POZA ZAKRESEM MVP]**
+
 - **Cel**: wyświetlenie podstawowych danych użytkownika (email, data rejestracji).
 - **Uwaga**: Ten widok nie jest wymagany przez żadne User Story w PRD i może zostać zaimplementowany w przyszłych iteracjach produktu. W MVP dane użytkownika są widoczne w `UserMenu` w prawym górnym rogu layoutu.
 - **Kluczowe elementy UI** (jeśli zostanie zaimplementowany):
@@ -175,6 +184,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
 #### 1.3.1 Strony Astro (server-rendered)
 
 **`SignUpPage.astro`**
+
 - Ścieżka: `/auth/sign-up`
 - Odpowiedzialność: server-side rendering strony rejestracji, osadzenie komponentu `SignUpForm`.
 - Logika server-side:
@@ -183,6 +193,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - W przeciwnym razie renderowanie strony z formularzem.
 
 **`SignInPage.astro`**
+
 - Ścieżka: `/auth/sign-in`
 - Odpowiedzialność: server-side rendering strony logowania, osadzenie komponentu `SignInForm`.
 - Logika server-side:
@@ -191,10 +202,12 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - W przeciwnym razie renderowanie strony.
 
 **`ResetPasswordPage.astro`**
+
 - Ścieżka: `/auth/reset-password`
 - Odpowiedzialność: server-side rendering strony inicjacji resetu hasła, osadzenie komponentu `ResetPasswordForm`.
 
 **`ResetPasswordConfirmPage.astro`**
+
 - Ścieżka: `/auth/reset-password/confirm`
 - Odpowiedzialność: server-side rendering strony potwierdzenia resetu hasła, osadzenie komponentu `ResetPasswordConfirmForm`.
 - Logika server-side:
@@ -203,6 +216,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - Renderowanie strony z formularzem.
 
 **`Layout.astro`**
+
 - Odpowiedzialność: główny layout dla widoków zalogowanego użytkownika.
 - Logika server-side:
   - Sprawdzenie sesji użytkownika (`context.locals.supabase.auth.getSession()`).
@@ -213,6 +227,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
 #### 1.3.2 Komponenty React (client-side)
 
 **`SignUpForm`**
+
 - Odpowiedzialność: zarządzanie stanem formularza rejestracji, walidacja danych, wywołanie endpointu `/api/auth/sign-up`, obsługa błędów i przekierowanie po sukcesie.
 - Stan lokalny:
   - `email` (string)
@@ -235,6 +250,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - Błąd sieci → wyświetlenie ogólnego komunikatu.
 
 **`SignInForm`**
+
 - Odpowiedzialność: zarządzanie stanem formularza logowania, walidacja danych, wywołanie endpointu `/api/auth/sign-in`, obsługa błędów i przekierowanie po sukcesie.
 - Stan lokalny:
   - `email`, `password`, `fieldErrors`, `formError`, `isSubmitting`.
@@ -248,6 +264,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - 400/500 → ogólne komunikaty.
 
 **`ResetPasswordForm`**
+
 - Odpowiedzialność: zarządzanie stanem formularza inicjacji resetu, walidacja emaila, wywołanie endpointu `/api/auth/reset-password`, wyświetlenie komunikatu potwierdzającego.
 - Stan lokalny:
   - `email`, `fieldErrors`, `formError`, `isSubmitting`, `isSubmitted` (boolean).
@@ -262,6 +279,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - 500 → ogólny komunikat.
 
 **`ResetPasswordConfirmForm`**
+
 - Odpowiedzialność: zarządzanie stanem formularza potwierdzenia resetu, walidacja nowego hasła, wywołanie endpointu Supabase do resetu hasła z tokenem.
 - Stan lokalny:
   - `password`, `passwordConfirm`, `fieldErrors`, `formError`, `isSubmitting`, `isSuccess` (boolean).
@@ -276,6 +294,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - 400/500 → ogólne komunikaty.
 
 **`MainNav`**
+
 - Odpowiedzialność: renderowanie głównych zakładek nawigacji (`Biblioteka`, `Generuj`, `Powtórki`), obsługa stanu aktywnej zakładki, dostępność klawiatury.
 - Props:
   - `activeTab` (string: 'library' | 'generate' | 'reviews')
@@ -284,6 +303,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - Nawigacja przez kliknięcie lub klawiaturę (Enter/Space).
 
 **`UserMenu`**
+
 - Odpowiedzialność: renderowanie sekcji użytkownika w prawym górnym rogu layoutu z adresem email i przyciskiem wylogowania.
 - Props:
   - `userEmail` (string)
@@ -291,6 +311,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - `SignOutButton`
 
 **`SignOutButton`**
+
 - Odpowiedzialność: obsługa wylogowania użytkownika, wywołanie endpointu `/api/auth/sign-out`, wyczyszczenie sesji, przekierowanie na `/auth/sign-in`.
 - Stan lokalny:
   - `isSubmitting` (boolean)
@@ -303,6 +324,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - 401/500 → wyświetlenie toasta „Nie udało się wylogować. Spróbuj ponownie."
 
 **`FormErrorBanner`**
+
 - Odpowiedzialność: spójne wyświetlanie komunikatów błędów formularza.
 - Props:
   - `error` (string | null)
@@ -311,6 +333,7 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
   - Dostępność: role="alert", aria-live="assertive".
 
 **`FormInfoBanner`**
+
 - Odpowiedzialność: spójne wyświetlanie komunikatów informacyjnych (np. po wysłaniu linku resetu).
 - Props:
   - `message` (string | null)
@@ -324,16 +347,19 @@ Wszystkie widoki prywatne (`/library`, `/generate`, `/reviews`, `/profile`) są 
 Wszystkie formularze autentykacji implementują walidację inline w celu poprawy UX i redukcji liczby błędów wysyłanych do serwera.
 
 **Email:**
+
 - Sprawdzenie formatu przez regex (uproszczone RFC 5322): `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`.
 - Trim i lowercase automatycznie stosowane przy onChange.
 - Komunikat błędu: „Podaj prawidłowy adres email."
 
 **Hasło:**
+
 - Sprawdzenie długości: min 8, max 72 znaki.
 - (Opcjonalnie) wymóg co najmniej jednej małej litery, jednej dużej, jednej cyfry i jednego znaku specjalnego.
 - Komunikat błędu: „Hasło musi mieć od 8 do 72 znaków."
 
 **Potwierdzenie hasła:**
+
 - Porównanie z polem hasło.
 - Komunikat błędu: „Hasła muszą być identyczne."
 
@@ -342,6 +368,7 @@ Wszystkie formularze autentykacji implementują walidację inline w celu poprawy
 Walidacja server-side jest realizowana przez Supabase Auth oraz custom middleware Astro (dla endpointów `/api/*`).
 
 **Kody HTTP i komunikaty:**
+
 - **200 OK**: operacja zakończona sukcesem (logowanie, reset hasła, wylogowanie).
 - **201 Created**: rejestracja zakończona sukcesem.
 - **400 Bad Request**: nieprawidłowy format danych (błąd walidacji). Odpowiedź zawiera szczegóły błędów w formacie JSON: `{ error: string, details?: object }`.
@@ -425,17 +452,19 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 **Opis:** Rejestracja nowego użytkownika.
 
 **Request:**
+
 - Method: `POST`
 - Content-Type: `application/json`
 - Body: `AuthSignUpCommand`
   ```typescript
   {
-    email: string;      // wymagany, format email, trim, lowercase
-    password: string;   // wymagany, 8–72 znaki
+    email: string; // wymagany, format email, trim, lowercase
+    password: string; // wymagany, 8–72 znaki
   }
   ```
 
 **Response:**
+
 - Success: `201 Created`
   ```typescript
   {
@@ -466,6 +495,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
     ```
 
 **Logika backendu:**
+
 1. Walidacja danych wejściowych (email format, hasło 8–72 znaków) przez schemat Zod.
 2. Wywołanie `context.locals.supabase.auth.signUp({ email, password })`.
 3. Supabase tworzy użytkownika w tabeli `auth.users` i zwraca obiekt `user` oraz `session`.
@@ -477,6 +507,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 5. Zwrócenie `AuthResponseDTO` z kodem 201.
 
 **Kontrakt danych:**
+
 - Input: `AuthSignUpCommand` (zgodnie z `src/types.ts`).
 - Output: `AuthResponseDTO`.
 
@@ -485,6 +516,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 **Opis:** Logowanie istniejącego użytkownika.
 
 **Request:**
+
 - Method: `POST`
 - Content-Type: `application/json`
 - Body: `AuthSignInCommand`
@@ -496,9 +528,10 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
   ```
 
 **Response:**
+
 - Success: `200 OK`
   ```typescript
-  AuthResponseDTO // { user, session }
+  AuthResponseDTO; // { user, session }
   ```
 - Errors:
   - `401 Unauthorized`: nieprawidłowy email lub hasło.
@@ -509,12 +542,14 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
   - `500 Internal Server Error`: błąd serwera.
 
 **Logika backendu:**
+
 1. Walidacja danych wejściowych (schemat Zod).
 2. Wywołanie `context.locals.supabase.auth.signInWithPassword({ email, password })`.
 3. Supabase weryfikuje dane logowania i zwraca `user` oraz `session`.
 4. Zwrócenie `AuthResponseDTO` z kodem 200.
 
 **Kontrakt danych:**
+
 - Input: `AuthSignInCommand`.
 - Output: `AuthResponseDTO`.
 
@@ -523,12 +558,14 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 **Opis:** Wylogowanie użytkownika (zakończenie sesji).
 
 **Request:**
+
 - Method: `POST`
 - Content-Type: `application/json`
 - Body: `AuthSignOutCommand` (pusty obiekt `{}`)
 - Headers: `Authorization: Bearer <access_token>`
 
 **Response:**
+
 - Success: `200 OK`
   ```json
   { "success": true }
@@ -538,12 +575,14 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
   - `500 Internal Server Error`: błąd serwera.
 
 **Logika backendu:**
+
 1. Weryfikacja tokenu (middleware Astro sprawdza `context.locals.supabase.auth.getSession()`).
 2. Wywołanie `context.locals.supabase.auth.signOut()`.
 3. Supabase anuluje sesję (access_token i refresh_token stają się nieważne).
 4. Zwrócenie `{ success: true }` z kodem 200.
 
 **Kontrakt danych:**
+
 - Input: `AuthSignOutCommand` (pusty).
 - Output: `SuccessResponseDTO`.
 
@@ -552,6 +591,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 **Opis:** Inicjacja resetu hasła (wysłanie linku resetu na email).
 
 **Request:**
+
 - Method: `POST`
 - Content-Type: `application/json`
 - Body: `AuthResetPasswordCommand`
@@ -562,6 +602,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
   ```
 
 **Response:**
+
 - Success: `200 OK`
   ```json
   { "success": true }
@@ -572,6 +613,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
   - `500 Internal Server Error`: błąd serwera.
 
 **Logika backendu:**
+
 1. Walidacja emaila (schemat Zod).
 2. Wywołanie `context.locals.supabase.auth.resetPasswordForEmail(email, { redirectTo: `${import.meta.env.PUBLIC_APP_URL}/auth/reset-password/confirm` })`.
    - `PUBLIC_APP_URL` powinien być skonfigurowany w zmiennych środowiskowych (np. `https://10xcards.com` dla produkcji, `http://localhost:3000` dla developmentu).
@@ -579,6 +621,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 4. Zwrócenie `{ success: true }` z kodem 200 (niezależnie od tego, czy konto istnieje).
 
 **Kontrakt danych:**
+
 - Input: `AuthResetPasswordCommand`.
 - Output: `SuccessResponseDTO`.
 
@@ -589,6 +632,7 @@ Wszystkie endpointy autentykacji są umieszczone w katalogu `src/pages/api/auth/
 Reset hasła (potwierdzenie) jest obsługiwany bezpośrednio przez Supabase SDK w komponencie `ResetPasswordConfirmForm` poprzez wywołanie `supabase.auth.updateUser({ password: newPassword })`. Token resetu jest automatycznie wyciągany z URL przez Supabase SDK.
 
 **Logika:**
+
 1. Użytkownik klika w link z emaila (np. `/auth/reset-password/confirm?token=xyz`).
 2. Supabase SDK automatycznie rozpoznaje token w URL i ustawia sesję tymczasową.
 3. Komponent `ResetPasswordConfirmForm` wywołuje `supabase.auth.updateUser({ password })`.
@@ -602,43 +646,30 @@ Wszystkie endpointy API wykorzystują **Zod** do walidacji danych wejściowych. 
 #### 2.2.1 Schematy Zod dla komend autentykacji
 
 **`AuthSignUpCommandSchema`**
+
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 export const AuthSignUpCommandSchema = z.object({
-  email: z.string()
-    .min(1, 'Email jest wymagany.')
-    .email('Podaj prawidłowy adres email.')
-    .trim()
-    .toLowerCase(),
-  password: z.string()
-    .min(8, 'Hasło musi mieć co najmniej 8 znaków.')
-    .max(72, 'Hasło może mieć maksymalnie 72 znaki.'),
+  email: z.string().min(1, "Email jest wymagany.").email("Podaj prawidłowy adres email.").trim().toLowerCase(),
+  password: z.string().min(8, "Hasło musi mieć co najmniej 8 znaków.").max(72, "Hasło może mieć maksymalnie 72 znaki."),
 });
 ```
 
 **`AuthSignInCommandSchema`**
+
 ```typescript
 export const AuthSignInCommandSchema = z.object({
-  email: z.string()
-    .min(1, 'Email jest wymagany.')
-    .email('Podaj prawidłowy adres email.')
-    .trim()
-    .toLowerCase(),
-  password: z.string()
-    .min(8, 'Hasło musi mieć co najmniej 8 znaków.')
-    .max(72, 'Hasło może mieć maksymalnie 72 znaki.'),
+  email: z.string().min(1, "Email jest wymagany.").email("Podaj prawidłowy adres email.").trim().toLowerCase(),
+  password: z.string().min(8, "Hasło musi mieć co najmniej 8 znaków.").max(72, "Hasło może mieć maksymalnie 72 znaki."),
 });
 ```
 
 **`AuthResetPasswordCommandSchema`**
+
 ```typescript
 export const AuthResetPasswordCommandSchema = z.object({
-  email: z.string()
-    .min(1, 'Email jest wymagany.')
-    .email('Podaj prawidłowy adres email.')
-    .trim()
-    .toLowerCase(),
+  email: z.string().min(1, "Email jest wymagany.").email("Podaj prawidłowy adres email.").trim().toLowerCase(),
 });
 ```
 
@@ -647,62 +678,69 @@ export const AuthResetPasswordCommandSchema = z.object({
 Każdy endpoint parsuje dane wejściowe przez odpowiedni schemat Zod przed wywołaniem logiki biznesowej.
 
 **Przykład walidacji w `sign-up.ts`:**
+
 ```typescript
-import type { APIRoute } from 'astro';
-import { AuthSignUpCommandSchema } from '@/lib/validation/auth.schemas';
+import type { APIRoute } from "astro";
+import { AuthSignUpCommandSchema } from "@/lib/validation/auth.schemas";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Parsowanie body
     const body = await request.json();
-    
+
     // Walidacja przez Zod
     const validatedData = AuthSignUpCommandSchema.parse(body);
-    
+
     // Wywołanie Supabase Auth
     const { data, error } = await locals.supabase.auth.signUp({
       email: validatedData.email,
       password: validatedData.password,
     });
-    
+
     if (error) {
       // Mapowanie błędów Supabase na kody HTTP
-      if (error.message.includes('already registered')) {
-        return new Response(JSON.stringify({ error: 'Użytkownik o podanym adresie email już istnieje.' }), {
+      if (error.message.includes("already registered")) {
+        return new Response(JSON.stringify({ error: "Użytkownik o podanym adresie email już istnieje." }), {
           status: 409,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         });
       }
-      return new Response(JSON.stringify({ error: 'Wystąpił błąd serwera.' }), { status: 500 });
+      return new Response(JSON.stringify({ error: "Wystąpił błąd serwera." }), { status: 500 });
     }
-    
+
     // Zwrócenie odpowiedzi
-    return new Response(JSON.stringify({
-      user: { user_id: data.user!.id, email: data.user!.email },
-      session: {
-        user_id: data.session!.user.id,
-        access_token: data.session!.access_token,
-        refresh_token: data.session!.refresh_token,
-        expires_at: new Date(data.session!.expires_at! * 1000).toISOString(),
-      },
-    }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        user: { user_id: data.user!.id, email: data.user!.email },
+        session: {
+          user_id: data.session!.user.id,
+          access_token: data.session!.access_token,
+          refresh_token: data.session!.refresh_token,
+          expires_at: new Date(data.session!.expires_at! * 1000).toISOString(),
+        },
+      }),
+      {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     // Obsługa błędów walidacji Zod
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify({
-        error: 'Nieprawidłowy format danych.',
-        details: error.errors,
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({
+          error: "Nieprawidłowy format danych.",
+          details: error.errors,
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
-    
+
     // Obsługa innych błędów
-    return new Response(JSON.stringify({ error: 'Wystąpił błąd serwera.' }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Wystąpił błąd serwera." }), { status: 500 });
   }
 };
 ```
@@ -737,6 +775,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 Supabase Auth zwraca błędy w formacie `{ error: { message: string, status: number } }`. Endpointy API mapują te błędy na odpowiednie kody HTTP i komunikaty w języku polskim.
 
 **Przykładowe mapowanie:**
+
 - `"User already registered"` → 409 Conflict, komunikat: „Użytkownik o podanym adresie email już istnieje."
 - `"Invalid login credentials"` → 401 Unauthorized, komunikat: „Niepoprawny email lub hasło."
 - `"Email not confirmed"` → 401 Unauthorized (jeśli wymagane potwierdzenie emaila).
@@ -747,8 +786,9 @@ Supabase Auth zwraca błędy w formacie `{ error: { message: string, status: num
 Wszystkie błędy serwera (500) są logowane w konsoli serwera (Astro) z pełnym stack trace'em dla celów debugowania. Użytkownikowi zwracany jest ogólny komunikat bez szczegółów technicznych.
 
 **Przykład logowania:**
+
 ```typescript
-console.error('[AUTH ERROR] sign-up:', error);
+console.error("[AUTH ERROR] sign-up:", error);
 ```
 
 ### 2.4 Aktualizacja renderowania stron server-side
@@ -758,53 +798,57 @@ console.error('[AUTH ERROR] sign-up:', error);
 Middleware Astro (`src/middleware/index.ts`) jest rozszerzone o logikę weryfikacji sesji użytkownika dla chronionych ścieżek.
 
 **Aktualizacja `src/middleware/index.ts`:**
+
 ```typescript
 import { defineMiddleware } from "astro:middleware";
 import { supabaseClient } from "../db/supabase.client.ts";
 
-const protectedPaths = ['/library', '/generate', '/reviews'];
+const protectedPaths = ["/library", "/generate", "/reviews"];
 // Nota: '/profile' jest opcjonalny i może zostać dodany w przyszłości
-const authPaths = ['/auth/sign-in', '/auth/sign-up', '/auth/reset-password'];
+const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/reset-password"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   // Udostępnienie klienta Supabase w context.locals
   context.locals.supabase = supabaseClient;
-  
+
   const { pathname } = context.url;
-  
+
   // Sprawdzenie sesji użytkownika
-  const { data: { session }, error } = await context.locals.supabase.auth.getSession();
-  
+  const {
+    data: { session },
+    error,
+  } = await context.locals.supabase.auth.getSession();
+
   // Jeśli użytkownik wchodzi na stronę główną bez sesji, przekieruj na logowanie
-  if (pathname === '/' && !session) {
-    return context.redirect('/auth/sign-in');
+  if (pathname === "/" && !session) {
+    return context.redirect("/auth/sign-in");
   }
-  
+
   // Jeśli użytkownik wchodzi na stronę główną z sesją, przekieruj na bibliotekę
-  if (pathname === '/' && session) {
-    return context.redirect('/library');
+  if (pathname === "/" && session) {
+    return context.redirect("/library");
   }
-  
+
   // Jeśli użytkownik próbuje wejść na chronioną ścieżkę bez sesji
-  if (protectedPaths.some(path => pathname.startsWith(path))) {
+  if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!session) {
       // Przekierowanie na logowanie z parametrem redirect
       return context.redirect(`/auth/sign-in?redirect=${encodeURIComponent(pathname)}`);
     }
   }
-  
+
   // Jeśli użytkownik jest zalogowany i próbuje wejść na stronę auth
-  if (authPaths.some(path => pathname.startsWith(path))) {
+  if (authPaths.some((path) => pathname.startsWith(path))) {
     if (session) {
       // Przekierowanie na bibliotekę
-      return context.redirect('/library');
+      return context.redirect("/library");
     }
   }
-  
+
   // Udostępnienie sesji i użytkownika w context.locals
   context.locals.session = session;
   context.locals.user = session?.user || null;
-  
+
   return next();
 });
 ```
@@ -816,8 +860,8 @@ Aby TypeScript rozpoznawał nowe właściwości w `context.locals`, należy rozs
 ```typescript
 /// <reference types="astro/client" />
 
-import type { SupabaseClient, Session, User } from '@supabase/supabase-js';
-import type { Database } from './db/database.types';
+import type { SupabaseClient, Session, User } from "@supabase/supabase-js";
+import type { Database } from "./db/database.types";
 
 declare namespace App {
   interface Locals {
@@ -833,63 +877,65 @@ declare namespace App {
 Strony Astro mogą teraz korzystać z `Astro.locals.session` i `Astro.locals.user` do warunkowego renderowania treści.
 
 **Przykład w `Layout.astro`:**
+
 ```astro
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ViewTransitions } from "astro:transitions";
 
 const { session, user } = Astro.locals;
 
 // Jeśli brak sesji, middleware już przekierował, więc tutaj sesja zawsze istnieje dla chronionych ścieżek
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>10xCards</title>
-  <ViewTransitions />
-</head>
-<body>
-  <header>
-    <nav>
-      <MainNav client:load />
-      <UserMenu userEmail={user?.email} client:load />
-    </nav>
-  </header>
-  <main>
-    <slot />
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10xCards</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <MainNav client:load />
+        <UserMenu userEmail={user?.email} client:load />
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+  </body>
 </html>
 ```
 
 **Przykład w `SignInPage.astro`:**
+
 ```astro
 ---
-import SignInForm from '@/components/auth/SignInForm';
+import SignInForm from "@/components/auth/SignInForm";
 
 const { session } = Astro.locals;
 
 // Jeśli użytkownik jest już zalogowany, przekieruj
 if (session) {
-  const redirect = Astro.url.searchParams.get('redirect') || '/library';
+  const redirect = Astro.url.searchParams.get("redirect") || "/library";
   return Astro.redirect(redirect);
 }
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <title>Logowanie - 10xCards</title>
-</head>
-<body>
-  <div class="auth-container">
-    <h1>Zaloguj się</h1>
-    <SignInForm client:load />
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Logowanie - 10xCards</title>
+  </head>
+  <body>
+    <div class="auth-container">
+      <h1>Zaloguj się</h1>
+      <SignInForm client:load />
+    </div>
+  </body>
 </html>
 ```
 
@@ -908,6 +954,7 @@ Supabase Auth zapewnia kompletne rozwiązanie do zarządzania użytkownikami, se
 #### 3.1.1 Konfiguracja Supabase Client
 
 **Plik `src/db/supabase.client.ts`:**
+
 ```typescript
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types.ts";
@@ -916,7 +963,7 @@ const supabaseUrl = import.meta.env.SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  throw new Error("Missing Supabase environment variables");
 }
 
 export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
@@ -931,6 +978,7 @@ export type SupabaseClient = typeof supabaseClient;
 ```
 
 **Zmienne środowiskowe (`.env`):**
+
 ```
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-anon-key
@@ -942,16 +990,19 @@ PUBLIC_APP_URL=http://localhost:3000
 #### 3.1.2 Architektura sesji
 
 **Server-side (Astro middleware):**
+
 - Middleware sprawdza sesję przy każdym żądaniu do chronionej ścieżki poprzez `supabase.auth.getSession()`.
 - Sesja jest przechowywana w `context.locals.session` i dostępna w stronach Astro.
 - Brak sesji → przekierowanie na `/auth/sign-in`.
 
 **Client-side (React components):**
+
 - Komponenty React korzystają z Supabase SDK do zarządzania sesjami (logowanie, rejestracja, wylogowanie).
 - Sesja jest automatycznie zapisywana w `localStorage` przez Supabase SDK (opcja `persistSession: true`).
 - Access token jest automatycznie odświeżany przez Supabase SDK (opcja `autoRefreshToken: true`).
 
 **Flow sesji:**
+
 1. Użytkownik loguje się przez `POST /api/auth/sign-in`.
 2. Supabase zwraca `access_token` i `refresh_token` w odpowiedzi.
 3. Supabase SDK automatycznie zapisuje tokeny w `localStorage`.
@@ -1041,16 +1092,14 @@ Alternatywnie, można ręcznie utworzyć rekord w `user_profiles` w endpoincie p
 
 ```typescript
 // Po pomyślnym wywołaniu supabase.auth.signUp
-const { data: profileData, error: profileError } = await locals.supabase
-  .from('user_profiles')
-  .insert({
-    user_id: data.user!.id,
-    email: data.user!.email!,
-    created_at: new Date().toISOString(),
-  });
+const { data: profileData, error: profileError } = await locals.supabase.from("user_profiles").insert({
+  user_id: data.user!.id,
+  email: data.user!.email!,
+  created_at: new Date().toISOString(),
+});
 
 if (profileError) {
-  console.error('[AUTH ERROR] Failed to create user profile:', profileError);
+  console.error("[AUTH ERROR] Failed to create user profile:", profileError);
   // Opcjonalnie: rollback użytkownika z auth.users lub zignorowanie błędu
 }
 ```
@@ -1093,18 +1142,19 @@ W MVP weryfikacja emaila jest **opcjonalna** i może zostać włączona w przysz
 Gdy `access_token` wygasa, Supabase SDK automatycznie próbuje odświeżyć token przy użyciu `refresh_token`. Jeśli odświeżenie się nie powiedzie (np. `refresh_token` również wygasł), użytkownik jest wylogowywany lokalnie i musi ponownie się zalogować.
 
 **Implementacja w komponencie React:**
+
 ```typescript
-import { useEffect } from 'react';
-import { supabaseClient } from '@/db/supabase.client';
+import { useEffect } from "react";
+import { supabaseClient } from "@/db/supabase.client";
 
 function useAuthSession() {
   useEffect(() => {
     const { data: authListener } = supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+      if (event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
         // Obsługa wylogowania lub odświeżenia tokenu
         if (!session) {
           // Przekierowanie na logowanie
-          window.location.href = '/auth/sign-in';
+          window.location.href = "/auth/sign-in";
         }
       }
     });
@@ -1121,26 +1171,29 @@ function useAuthSession() {
 Gdy endpoint API zwraca 401 Unauthorized (np. token nieprawidłowy lub wygasły), komponent obsługujący request powinien wyświetlić komunikat i przycisk przekierowujący na `/auth/sign-in`.
 
 **Przykład w custom hook `useFetch`:**
+
 ```typescript
 async function apiRequest(endpoint: string, options: RequestInit) {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+
   const response = await fetch(endpoint, {
     ...options,
     headers: {
       ...options.headers,
-      'Authorization': `Bearer ${session?.access_token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.access_token}`,
+      "Content-Type": "application/json",
     },
   });
-  
+
   if (response.status === 401) {
     // Sesja wygasła lub token nieprawidłowy
     // Wylogowanie i przekierowanie
     await supabaseClient.auth.signOut();
-    window.location.href = '/auth/sign-in?redirect=' + encodeURIComponent(window.location.pathname);
+    window.location.href = "/auth/sign-in?redirect=" + encodeURIComponent(window.location.pathname);
   }
-  
+
   return response;
 }
 ```
@@ -1276,37 +1329,38 @@ async function apiRequest(endpoint: string, options: RequestInit) {
 Wszystkie istniejące endpointy API (`/api/flashcards`, `/api/generation-requests`, `/api/reviews`) wymagają autoryzacji. Middleware Astro oraz Supabase RLS zapewniają, że tylko zalogowani użytkownicy mają dostęp do swoich danych.
 
 **Aktualizacja endpointu `GET /api/flashcards`:**
+
 ```typescript
-import type { APIRoute } from 'astro';
+import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async ({ locals, url }) => {
   const { session, supabase } = locals;
-  
+
   if (!session) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   }
-  
-  const limit = parseInt(url.searchParams.get('limit') || '20');
-  const cursor = url.searchParams.get('cursor') || null;
-  
+
+  const limit = parseInt(url.searchParams.get("limit") || "20");
+  const cursor = url.searchParams.get("cursor") || null;
+
   // Zapytanie do Supabase z RLS (automatycznie filtruje po user_id)
   const { data, error } = await supabase
-    .from('flashcards')
-    .select('*')
-    .is('deleted_at', null)
-    .order('updated_at', { ascending: false })
+    .from("flashcards")
+    .select("*")
+    .is("deleted_at", null)
+    .order("updated_at", { ascending: false })
     .limit(limit);
-  
+
   if (error) {
-    return new Response(JSON.stringify({ error: 'Failed to fetch flashcards' }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Failed to fetch flashcards" }), { status: 500 });
   }
-  
+
   return new Response(JSON.stringify({ items: data, next_cursor: null }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 };
 ```
@@ -1318,37 +1372,40 @@ Dzięki RLS zapytanie automatycznie filtruje fiszki tylko dla zalogowanego użyt
 Komponenty React odpowiedzialne za zarządzanie fiszkami, generację AI i powtórki muszą być zaktualizowane, aby obsługiwać błędy 401 Unauthorized i przekierowywać na logowanie w razie wygaśnięcia sesji.
 
 **Przykład hooka `useFetch` z obsługą 401:**
+
 ```typescript
-import { supabaseClient } from '@/db/supabase.client';
+import { supabaseClient } from "@/db/supabase.client";
 
 export async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  
+  const {
+    data: { session },
+  } = await supabaseClient.auth.getSession();
+
   if (!session) {
-    window.location.href = '/auth/sign-in?redirect=' + encodeURIComponent(window.location.pathname);
-    throw new Error('Unauthorized');
+    window.location.href = "/auth/sign-in?redirect=" + encodeURIComponent(window.location.pathname);
+    throw new Error("Unauthorized");
   }
-  
+
   const response = await fetch(endpoint, {
     ...options,
     headers: {
       ...options?.headers,
-      'Authorization': `Bearer ${session.access_token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+      "Content-Type": "application/json",
     },
   });
-  
+
   if (response.status === 401) {
     await supabaseClient.auth.signOut();
-    window.location.href = '/auth/sign-in?redirect=' + encodeURIComponent(window.location.pathname);
-    throw new Error('Unauthorized');
+    window.location.href = "/auth/sign-in?redirect=" + encodeURIComponent(window.location.pathname);
+    throw new Error("Unauthorized");
   }
-  
+
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.error || 'Request failed');
+    throw new Error(error.error || "Request failed");
   }
-  
+
   return response.json();
 }
 ```
@@ -1588,16 +1645,19 @@ W przyszłości, jeśli pojawi się potrzeba, Supabase Auth wspiera OAuth provid
 ### 8.1 Ryzyka techniczne
 
 **Ryzyko 1: Problemy z integracją Supabase Auth i Astro SSR**
+
 - **Prawdopodobieństwo**: Niskie
 - **Wpływ**: Wysoki
 - **Mitigacja**: Wykonanie proof-of-concept w fazie początkowej projektu, testowanie integracji na środowisku deweloperskim przed deployment.
 
 **Ryzyko 2: Nieprawidłowa konfiguracja RLS prowadząca do wycieków danych**
+
 - **Prawdopodobieństwo**: Średnie
 - **Wpływ**: Krytyczny
 - **Mitigacja**: Code review polityk RLS, testy integracyjne weryfikujące izolację danych użytkowników, audyt bezpieczeństwa przed deployment.
 
 **Ryzyko 3: Wydajnościowe problemy z middleware sprawdzającym sesję przy każdym żądaniu**
+
 - **Prawdopodobieństwo**: Niskie
 - **Wpływ**: Średni
 - **Mitigacja**: Caching sesji w pamięci (Redis) na środowisku produkcyjnym, monitoring czasu odpowiedzi middleware.
@@ -1605,11 +1665,13 @@ W przyszłości, jeśli pojawi się potrzeba, Supabase Auth wspiera OAuth provid
 ### 8.2 Ryzyka UX
 
 **Ryzyko 4: Zbyt długi czas weryfikacji sesji prowadzący do wolnego ładowania stron**
+
 - **Prawdopodobieństwo**: Niskie
 - **Wpływ**: Średni
 - **Mitigacja**: Optymalizacja zapytań do Supabase, użycie Supabase Edge Functions dla szybszej weryfikacji.
 
 **Ryzyko 5: Użytkownicy zapominają haseł i frustrują się procesem resetu**
+
 - **Prawdopodobieństwo**: Średnie
 - **Wpływ**: Niski
 - **Mitigacja**: Jasny i prosty proces resetu hasła, wsparcie techniczne dla użytkowników, opcjonalne włączenie MFA w przyszłości.
@@ -1617,11 +1679,13 @@ W przyszłości, jeśli pojawi się potrzeba, Supabase Auth wspiera OAuth provid
 ### 8.3 Ryzyka bezpieczeństwa
 
 **Ryzyko 6: Ataki brute-force na endpointy logowania**
+
 - **Prawdopodobieństwo**: Średnie
 - **Wpływ**: Średni
 - **Mitigacja**: Rate limiting (Supabase Auth + custom middleware), monitoring prób logowania, blokowanie IP po wielokrotnych nieudanych próbach.
 
 **Ryzyko 7: Ataki XSS lub CSRF**
+
 - **Prawdopodobieństwo**: Niskie
 - **Wpływ**: Wysoki
 - **Mitigacja**: Sanityzacja danych wejściowych, używanie HTTPS, automatyczna ochrona CSRF w Supabase SDK, Content Security Policy (CSP) w nagłówkach HTTP.
@@ -1650,13 +1714,13 @@ Plan implementacji zakłada wdrożenie modułu w ciągu 2 sprintów (4 tygodni) 
 
 Niniejsza specyfikacja pokrywa w pełni następujące User Stories z PRD:
 
-| User Story | Status | Uwagi |
-|------------|--------|-------|
-| US-001: Rejestracja konta | ✅ Pełne pokrycie | Implementacja formularza rejestracji z polami: email, hasło, potwierdzenie hasła. Po sukcesie przekierowanie na `/library`. |
-| US-002: Logowanie do aplikacji | ✅ Pełne pokrycie | Implementacja formularza logowania. Obsługa błędów 401 i przekierowania z parametrem `redirect`. |
-| US-003: Reset hasła | ✅ Pełne pokrycie | Dwuetapowy proces: inicjacja przez email + potwierdzenie przez link z emaila. |
-| US-004: Wylogowanie | ✅ Pełne pokrycie | Wylogowanie dostępne z każdego widoku przez `SignOutButton` w `UserMenu`. |
-| US-014: Bezpieczny dostęp | ✅ Pełne pokrycie | Wszystkie funkcje aplikacji wymagają logowania. Przekierowania dla niezalogowanych użytkowników. |
+| User Story                     | Status            | Uwagi                                                                                                                       |
+| ------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| US-001: Rejestracja konta      | ✅ Pełne pokrycie | Implementacja formularza rejestracji z polami: email, hasło, potwierdzenie hasła. Po sukcesie przekierowanie na `/library`. |
+| US-002: Logowanie do aplikacji | ✅ Pełne pokrycie | Implementacja formularza logowania. Obsługa błędów 401 i przekierowania z parametrem `redirect`.                            |
+| US-003: Reset hasła            | ✅ Pełne pokrycie | Dwuetapowy proces: inicjacja przez email + potwierdzenie przez link z emaila.                                               |
+| US-004: Wylogowanie            | ✅ Pełne pokrycie | Wylogowanie dostępne z każdego widoku przez `SignOutButton` w `UserMenu`.                                                   |
+| US-014: Bezpieczny dostęp      | ✅ Pełne pokrycie | Wszystkie funkcje aplikacji wymagają logowania. Przekierowania dla niezalogowanych użytkowników.                            |
 
 ### 10.2 Wymagania autentykacji zgodne z PRD
 
@@ -1678,6 +1742,7 @@ Zgodnie z PRD (sekcja 3 - Wymagania funkcjonalne) oraz US-014, wszystkie funkcje
 3. **API Endpoints**: Weryfikacja tokenu Bearer w nagłówku `Authorization` dla wszystkich endpointów `/api/*`. Brak lub nieprawidłowy token → 401 Unauthorized.
 
 **Kryteria US-014 są w pełni spełnione:**
+
 - ✅ Logowanie i rejestracja na dedykowanych stronach (`/auth/sign-in`, `/auth/sign-up`)
 - ✅ Logowanie wymaga email + hasło
 - ✅ Rejestracja wymaga email + hasło + potwierdzenie hasła

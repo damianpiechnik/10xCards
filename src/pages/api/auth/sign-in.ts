@@ -63,7 +63,7 @@ export const POST: APIRoute = async (context) => {
   });
 
   if (error) {
-    const status = error.status === 400 ? 401 : error.status ?? 500;
+    const status = error.status === 400 ? 401 : (error.status ?? 500);
     return jsonResponse(status, { error: error.message });
   }
 

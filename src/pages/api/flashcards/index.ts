@@ -39,11 +39,10 @@ const parseBoolean = (value: string | null | undefined) => {
 };
 
 const listQuerySchema = z.object({
-  limit: z
-    .preprocess(
-      (value) => (value === null || value === undefined || value === "" ? 20 : Number(value)),
-      z.number().int().min(1).max(100)
-    ),
+  limit: z.preprocess(
+    (value) => (value === null || value === undefined || value === "" ? 20 : Number(value)),
+    z.number().int().min(1).max(100)
+  ),
   cursor: z
     .string()
     .nullable()
@@ -93,7 +92,7 @@ export const GET: APIRoute = async (context) => {
     }
 
     const query: FlashcardListQuery = parsed.data;
-    const sortField = query.sort?.startsWith("-") ? query.sort.slice(1) : query.sort ?? "created_at";
+    const sortField = query.sort?.startsWith("-") ? query.sort.slice(1) : (query.sort ?? "created_at");
     const sortAsc = !query.sort?.startsWith("-");
     const limit = query.limit ?? 20;
 

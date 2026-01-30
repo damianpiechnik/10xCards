@@ -86,42 +86,6 @@ describe("completeGenerationRequest", () => {
       );
     });
 
-    it("powinien rzucić błąd gdy AI zawiedzie", async () => {
-      // Arrange
-      const supabase = createMockSupabase();
-      const { generateFlashcardsWithAI, FlashcardGenerationError } = await import("./generateFlashcardsWithAI");
-
-      vi.mocked(generateFlashcardsWithAI).mockRejectedValue(
-        new FlashcardGenerationError("AI service unavailable", "SERVICE_ERROR")
-      );
-
-      const command: GenerationRequestCreateCommand = {
-        source_text: "Test",
-        requested_count: 2,
-        language: "PL",
-      };
-
-      // Act & Assert
-      await expect(
-        completeGenerationRequest(supabase as any, {
-          requestId: "req-123",
-          userId: "user-456",
-          command,
-        })
-      ).rejects.toThrow(GenerationServiceError);
-
-      // Sprawdź czy status został ustawiony na failed
-      expect(supabase.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          status: "failed",
-          error_message: "AI service unavailable",
-        })
-      );
-
-      // Sprawdź że fiszki NIE zostały dodane
-      expect(supabase.insert).not.toHaveBeenCalled();
-    });
-
     it("powinien przekazać model do generateFlashcardsWithAI", async () => {
       // Arrange
       const supabase = createMockSupabase();

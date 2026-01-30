@@ -38,7 +38,7 @@ describe("reviewStorage", () => {
       // Assert
       const stored = sessionStorage.getItem("reviews:queue");
       expect(stored).not.toBeNull();
-      const parsed = JSON.parse(stored!);
+      const parsed = JSON.parse(stored ?? "");
       expect(parsed).toHaveLength(2);
       expect(parsed[0].id).toBe("fc-1");
       expect(parsed[1].id).toBe("fc-2");
@@ -55,7 +55,7 @@ describe("reviewStorage", () => {
 
       // Assert
       const stored = sessionStorage.getItem("reviews:queue");
-      const parsed = JSON.parse(stored!);
+      const parsed = JSON.parse(stored ?? "");
       expect(parsed).toHaveLength(2);
       expect(parsed[0].id).toBe("fc-2");
     });
@@ -69,7 +69,7 @@ describe("reviewStorage", () => {
 
       // Assert
       const stored = sessionStorage.getItem("reviews:queue");
-      const parsed = JSON.parse(stored!);
+      const parsed = JSON.parse(stored ?? "");
       expect(parsed).toEqual([]);
     });
 

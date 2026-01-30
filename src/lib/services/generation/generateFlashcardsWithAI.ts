@@ -56,42 +56,6 @@ export class FlashcardGenerationError extends Error {
 }
 
 /**
- * Tworzy schemat JSON dla odpowiedzi z AI
- */
-const createResponseFormat = (): ResponseFormat => ({
-  type: "json_schema",
-  json_schema: {
-    name: "flashcard_generation",
-    strict: true,
-    schema: {
-      type: "object",
-      properties: {
-        flashcards: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              front: {
-                type: "string",
-                description: "Pytanie lub termin na przedniej stronie fiszki",
-              },
-              back: {
-                type: "string",
-                description: "Odpowiedź lub definicja na tylnej stronie fiszki",
-              },
-            },
-            required: ["front", "back"],
-            additionalProperties: false,
-          },
-        },
-      },
-      required: ["flashcards"],
-      additionalProperties: false,
-    },
-  },
-});
-
-/**
  * Tworzy system prompt na podstawie języka
  */
 const createSystemPrompt = (language: "PL" | "EN"): string => {
@@ -227,7 +191,6 @@ export const generateFlashcardsWithAI = async (input: GenerateFlashcardsInput): 
   // Przygotowanie parametrów zapytania do AI
   const systemPrompt = createSystemPrompt(input.language);
   const userPrompt = createUserPrompt(input.sourceText, input.requestedCount, input.language);
-  const responseFormat = createResponseFormat();
 
   try {
     // Wywołanie OpenRouter API
@@ -241,7 +204,8 @@ export const generateFlashcardsWithAI = async (input: GenerateFlashcardsInput): 
         },
         {
           role: "user",
-          content: userPrompt + "\n\nOdpowiedź MUSI być w formacie JSON: {\"flashcards\": [{\"front\": \"...\", \"back\": \"...\"}]}",
+          content:
+            userPrompt + '\n\nOdpowiedź MUSI być w formacie JSON: {"flashcards": [{"front": "...", "back": "..."}]}',
         },
       ],
       model: input.model || "openai/gpt-4-turbo-preview",
@@ -328,11 +292,7 @@ export const generateFlashcardsWithAI = async (input: GenerateFlashcardsInput): 
     }
 
     if (error instanceof OpenRouterServerError) {
-      throw new FlashcardGenerationError(
-        "Błąd serwera OpenRouter. Spróbuj ponownie za chwilę.",
-        "SERVER_ERROR",
-        error
-      );
+      throw new FlashcardGenerationError("Błąd serwera OpenRouter. Spróbuj ponownie za chwilę.", "SERVER_ERROR", error);
     }
 
     // Ogólny OpenRouterError (np. 402 Payment Required)
@@ -345,13 +305,9 @@ export const generateFlashcardsWithAI = async (input: GenerateFlashcardsInput): 
           error
         );
       }
-      
+
       // Inny błąd HTTP
-      throw new FlashcardGenerationError(
-        `Błąd OpenRouter: ${error.message}`,
-        "OPENROUTER_ERROR",
-        error
-      );
+      throw new FlashcardGenerationError(`Błąd OpenRouter: ${error.message}`, "OPENROUTER_ERROR", error);
     }
 
     if (error instanceof FlashcardGenerationError) {

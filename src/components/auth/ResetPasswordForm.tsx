@@ -19,7 +19,6 @@ interface ResetPasswordFormState {
   isSubmitted: boolean;
 }
 
-
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const normalizeEmail = (value: string) => value.trim().toLowerCase();
