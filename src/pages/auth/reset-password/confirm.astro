@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import UpdatePasswordForm from "@/components/auth/UpdatePasswordForm";
+---
+
+<Layout title="Ustaw nowe hasło">
+  <main class="flex min-h-screen items-center justify-center px-4 py-12">
+    <section class="w-full max-w-md">
+      <UpdatePasswordForm client:load />
+    </section>
+  </main>
+</Layout>

@@ -1,0 +1,23 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ReviewSession from "@/components/reviews/ReviewSession";
+
+// Additional security layer - verify user is authenticated
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/auth/sign-in");
+}
+---
+
+<Layout title="Sesja powtórek">
+  <main class="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-4 py-10">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold text-foreground">Sesja powtórek</h1>
+      <p class="text-sm text-muted-foreground">Oceń fiszki w kolejności zgodnej z harmonogramem.</p>
+    </header>
+    <section class="w-full">
+      <ReviewSession client:load initialQueue={[]} />
+    </section>
+  </main>
+</Layout>

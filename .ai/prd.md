@@ -1,31 +1,38 @@
 # Dokument wymagań produktu (PRD) - 10xCards
+
 ## 1. Przegląd produktu
+
 10xCards to aplikacja webowa do szybkiego tworzenia i nauki fiszek dla studentów medycyny. Produkt umożliwia generowanie fiszek przez AI na podstawie wklejonego tekstu (głównie definicje i listy pojęć), ręczne tworzenie fiszek oraz przeglądanie, edycję i usuwanie fiszek. Każda fiszka ma przypisany harmonogram powtórek oparty o gotowy algorytm SRS, a format fiszek to pytanie i odpowiedź lub przód i tył. Użytkownik zarządza fiszkami w ramach konta (email + hasło). Priorytetem MVP jest szybkie generowanie fiszek z powtórkami oraz poprawność merytoryczna treści.
 
 ## 2. Problem użytkownika
+
 Studenci medycyny potrzebują bardzo szybkiego sposobu na zamianę dużych porcji materiału w skuteczne fiszki, bez ręcznego przepisywania. Obecny proces jest czasochłonny, a tworzenie fiszek w dużej liczbie obniża motywację. Dodatkowo, jakość fiszek generowanych automatycznie bywa nierówna, więc potrzebna jest szybka edycja. Użytkownicy chcą też mieć pewność, że fiszki są powtarzane w odpowiednich odstępach czasu bez ręcznego planowania. Celem produktu jest szybkie generowanie fiszek wraz z powtórkami w formacie pytanie i odpowiedź lub przód i tył.
 
 ## 3. Wymagania funkcjonalne
-1. Generowanie fiszek przez AI z wklejonego tekstu:
+
+**UWAGA**: Wszystkie poniższe funkcje wymagają uwierzytelnienia użytkownika. Aplikacja nie oferuje żadnych funkcjonalności dla niezalogowanych użytkowników.
+
+1. Generowanie fiszek przez AI z wklejonego tekstu (wymaga logowania):
    - Limit wejścia: 1000 znaków.
    - Czas generacji: do 30 sekund.
    - Użytkownik ustawia liczbę fiszek i język (PL/EN).
    - Fiszki mają format pytanie i odpowiedź lub przód i tył.
-2. Podstawowa edycja i zarządzanie:
+2. Podstawowa edycja i zarządzanie (wymaga logowania):
    - Edycja fiszek inline.
    - Usuwanie fiszek.
    - Przeglądanie listy fiszek.
-3. Ręczne tworzenie fiszek:
+3. Ręczne tworzenie fiszek (wymaga logowania):
    - Tworzenie fiszek bez AI.
 4. Konta użytkowników:
    - Rejestracja na email i hasło.
    - Logowanie i wylogowanie.
    - Reset hasła przez email.
-5. Integracja z algorytmem powtórek:
+5. Integracja z algorytmem powtórek (wymaga logowania):
    - Harmonogram powtórek przypisany do każdej fiszki.
    - System pokazuje fiszki do powtórki zgodnie z harmonogramem.
 
 ## 4. Granice produktu
+
 1. Zakres MVP obejmuje 2–3 sprinty z priorytetem:
    - Generowanie AI.
    - Podstawowa edycja i zarządzanie fiszkami.
@@ -51,6 +58,7 @@ Studenci medycyny potrzebują bardzo szybkiego sposobu na zamianę dużych porcj
    - UX: zbyt długi proces generacji. Właściciel: UX. Mitigacja: jasny stan ładowania i komunikat o czasie.
 
 ## 5. Historyjki użytkowników
+
 - ID: US-001
   Tytuł: Rejestracja konta
   Opis: Jako użytkownik chcę założyć konto przez email i hasło, abym mógł zapisywać swoje fiszki.
@@ -137,7 +145,7 @@ Studenci medycyny potrzebują bardzo szybkiego sposobu na zamianę dużych porcj
   Opis: Jako użytkownik chcę ręcznie utworzyć fiszkę, gdy nie korzystam z AI.
   Kryteria akceptacji:
   - Użytkownik może wprowadzić przód i tył fiszki.
-  - Fiszka jest zapisywana jako manualna.
+  - Fiszki są zapisywane jako manualne (pole `is_manual` po stronie backendu), a `card_type` pozostaje `qa` lub `front_back`.
 
 - ID: US-013
   Tytuł: Rozpoczęcie powtórek
@@ -146,11 +154,25 @@ Studenci medycyny potrzebują bardzo szybkiego sposobu na zamianę dużych porcj
   - System pokazuje fiszki do powtórki na podstawie harmonogramu.
   - Po zakończeniu sesji harmonogram aktualizuje się.
 
+- ID: US-014
+  Tytuł: Bezpieczny dostęp
+  Opis: Jako użytkownik chcę mieć możliwość rejestracji i logowania się do systemu w sposób zapewniający bezpieczeństwo moich danych.
+  Kryteria akceptacji:
+  - Logowanie i rejestracja odbywają się na dedykowanych stronach.
+  - Logowanie wymaga podania adresu email i hasła.
+  - Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła.
+  - WSZYSTKIE funkcje aplikacji (generowanie fiszek, biblioteka, powtórki) wymagają logowania - brak funkcjonalności dla niezalogowanych użytkowników.
+  - Niezalogowany użytkownik próbujący wejść na chronione strony (/library, /generate, /reviews) jest przekierowywany na stronę logowania.
+  - Użytkownik może logować się do systemu poprzez przycisk w prawym górnym rogu (widoczny dla niezalogowanych).
+  - Użytkownik może się wylogować z systemu poprzez przycisk "Wyloguj się" w prawym górnym rogu w głównym Layout.astro (widoczny dla zalogowanych).
+  - Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
+  - Odzyskiwanie hasła przez email jest możliwe.
+
 ## 6. Metryki sukcesu
+
 1. Zadowolenie użytkownika:
    - Co najmniej 80 procent wygenerowanych fiszek jest akceptowanych przez użytkownika.
 2. Aktywność użytkowników:
    - Co najmniej 50 procent nowych użytkowników uruchamia powtórki w ciągu 7 dni.
 3. Efektywność nauki:
    - Średnia liczba powtórek na użytkownika w pierwszych 7 dniach wynosi co najmniej 20.
-

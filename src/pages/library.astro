@@ -1,0 +1,25 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import FlashcardList from "@/components/library/FlashcardList";
+
+// Additional security layer - verify user is authenticated
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/auth/sign-in");
+}
+---
+
+<Layout title="Biblioteka fiszek">
+  <main class="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-6 px-4 py-10">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold text-foreground">Biblioteka fiszek</h1>
+      <p class="text-sm text-muted-foreground">
+        Przeglądaj swoje fiszki, ładuj kolejne i edytuj je inline. Dodawanie manualne jest dostępne w osobnym widoku.
+      </p>
+    </header>
+    <section class="w-full">
+      <FlashcardList client:load />
+    </section>
+  </main>
+</Layout>

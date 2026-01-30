@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SignUpForm from "@/components/auth/SignUpForm";
+---
+
+<Layout title="Rejestracja">
+  <main class="flex min-h-screen items-center justify-center px-4 py-12">
+    <section class="w-full max-w-md">
+      <SignUpForm client:load />
+    </section>
+  </main>
+</Layout>

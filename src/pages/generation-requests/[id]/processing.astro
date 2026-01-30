@@ -1,0 +1,45 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import GenerationProcessingStatus from "@/components/generate/GenerationProcessingStatus";
+
+// Additional security layer - verify user is authenticated
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/auth/sign-in");
+}
+
+const { id } = Astro.params;
+const requestId = typeof id === "string" ? id : "";
+---
+
+<Layout title="Generowanie w toku">
+  <main class="flex min-h-screen items-center justify-center px-4 py-12">
+    <section class="w-full max-w-lg space-y-6">
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="space-y-4 p-6">
+          <div class="flex items-center gap-3">
+            <span
+              class="inline-flex h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground/40 border-t-muted-foreground"
+              aria-hidden="true"
+            ></span>
+            <h1 class="text-lg font-semibold">Generowanie w toku</h1>
+          </div>
+          <p class="text-sm text-muted-foreground" role="status" aria-live="polite">
+            Przetwarzamy Twoje zlecenie. Zwykle zajmuje to do 30 sekund.
+          </p>
+          {
+            requestId ? (
+              <p class="text-xs text-muted-foreground">
+                ID zlecenia: <span class="font-mono">{requestId}</span>
+              </p>
+            ) : (
+              <p class="text-xs text-destructive">Nieprawidłowy identyfikator zlecenia.</p>
+            )
+          }
+          {requestId ? <GenerationProcessingStatus requestId={requestId} client:load /> : null}
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

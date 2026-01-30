@@ -1,0 +1,29 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ManualFlashcardForm from "@/components/library/ManualFlashcardForm";
+
+// Additional security layer - verify user is authenticated
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect("/auth/sign-in");
+}
+---
+
+<Layout title="Dodaj fiszkę">
+  <main class="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-6 px-4 py-10">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold text-foreground">Dodaj fiszkę manualnie</h1>
+      <p class="text-sm text-muted-foreground">
+        Wpisz przód i tył fiszki. Po zapisaniu wrócisz do biblioteki.
+      </p>
+      <p class="text-xs text-muted-foreground">Zakres: 2–2000 znaków na pole.</p>
+      <a class="text-xs font-medium text-primary underline-offset-4 hover:underline" href="/library">
+        Powrót do biblioteki
+      </a>
+    </header>
+    <section class="w-full">
+      <ManualFlashcardForm client:load />
+    </section>
+  </main>
+</Layout>
