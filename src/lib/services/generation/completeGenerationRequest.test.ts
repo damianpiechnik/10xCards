@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { completeGenerationRequest, GenerationServiceError } from "./completeGenerationRequest";
 import type { GenerationRequestCreateCommand } from "@/types";

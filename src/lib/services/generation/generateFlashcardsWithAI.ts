@@ -1,5 +1,4 @@
 import { openRouter } from "@/lib/services/openrouter";
-import type { ResponseFormat } from "@/lib/services/openrouter";
 import {
   OpenRouterError,
   OpenRouterAuthError,
