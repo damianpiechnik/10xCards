@@ -7,9 +7,6 @@ import { useAuthSession } from "@/components/hooks/useAuthSession";
 import { useGenerationRequestDetails } from "@/components/hooks/useGenerationRequestDetails";
 import { useRetryGenerationRequest } from "@/components/hooks/useRetryGenerationRequest";
 import { getStatusDescription, getStatusLabel, isRetryableStatus } from "@/components/generate/generationStatus";
-import type { GenerationRequestDetailsResponseDTO } from "@/types";
-
-type GenerationStatus = GenerationRequestDetailsResponseDTO["status"];
 
 interface GenerationRequestDetailsProps {
   requestId: string;

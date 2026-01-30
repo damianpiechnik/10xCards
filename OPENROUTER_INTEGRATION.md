@@ -24,7 +24,7 @@ Serwis OpenRouter został zintegrowany z aplikacją 10xCards w celu automatyczne
 ✅ **Retry Logic** - automatyczne ponowne próby przy błędach  
 ✅ **Fallback** - powrót do prostego generowania przy problemach z AI  
 ✅ **Walidacja** - sprawdzanie poprawności wygenerowanych fiszek  
-✅ **Bezpieczeństwo** - limity długości i liczby fiszek  
+✅ **Bezpieczeństwo** - limity długości i liczby fiszek
 
 ## 🏗️ Architektura
 
@@ -113,11 +113,11 @@ Klucz API można uzyskać na: https://openrouter.ai/keys
 // src/lib/services/openrouter/openrouter.instance.ts
 export const openRouter = new OpenRouterService({
   apiKey: import.meta.env.OPENROUTER_API_KEY,
-  defaultModel: 'openai/gpt-4-turbo-preview',
+  defaultModel: "openai/gpt-4-turbo-preview",
   defaultTemperature: 0.7,
   defaultMaxTokens: 2000,
-  timeout: 60000,      // 60 sekund
-  maxRetries: 3        // 3 próby retry
+  timeout: 60000, // 60 sekund
+  maxRetries: 3, // 3 próby retry
 });
 ```
 
@@ -125,9 +125,9 @@ export const openRouter = new OpenRouterService({
 
 ```typescript
 // generateFlashcardsWithAI.ts
-MAX_FLASHCARDS_PER_REQUEST = 50
-MAX_SOURCE_TEXT_LENGTH = 10000
-MAX_FLASHCARD_FIELD_LENGTH = 2000
+MAX_FLASHCARDS_PER_REQUEST = 50;
+MAX_SOURCE_TEXT_LENGTH = 10000;
+MAX_FLASHCARD_FIELD_LENGTH = 2000;
 ```
 
 ## 💻 Użycie
@@ -135,22 +135,21 @@ MAX_FLASHCARD_FIELD_LENGTH = 2000
 ### Podstawowe użycie w kodzie
 
 ```typescript
-import { generateFlashcardsWithAI } from '@/lib/services/generation/generateFlashcardsWithAI';
+import { generateFlashcardsWithAI } from "@/lib/services/generation/generateFlashcardsWithAI";
 
 try {
   const flashcards = await generateFlashcardsWithAI({
-    sourceText: 'Fotosynteza to proces...',
+    sourceText: "Fotosynteza to proces...",
     requestedCount: 5,
-    language: 'PL',
-    model: 'openai/gpt-4-turbo-preview' // opcjonalne
+    language: "PL",
+    model: "openai/gpt-4-turbo-preview", // opcjonalne
   });
 
   // flashcards: GeneratedFlashcard[]
-  flashcards.forEach(card => {
+  flashcards.forEach((card) => {
     console.log(`Q: ${card.front}`);
     console.log(`A: ${card.back}`);
   });
-
 } catch (error) {
   if (error instanceof FlashcardGenerationError) {
     console.error(`Błąd: ${error.message} (${error.code})`);
@@ -162,7 +161,7 @@ try {
 
 ```typescript
 // src/pages/api/generation-requests/index.ts
-import { completeGenerationRequest } from '@/lib/services/generation/completeGenerationRequest';
+import { completeGenerationRequest } from "@/lib/services/generation/completeGenerationRequest";
 
 export const POST: APIRoute = async (context) => {
   // ... walidacja i auth ...
@@ -171,11 +170,11 @@ export const POST: APIRoute = async (context) => {
     requestId: data.id,
     userId: user.id,
     command: {
-      source_text: 'Tekst źródłowy...',
+      source_text: "Tekst źródłowy...",
       requested_count: 5,
-      language: 'PL',
-      model: null
-    }
+      language: "PL",
+      model: null,
+    },
   });
 
   return jsonResponse(202, dto);
@@ -183,6 +182,7 @@ export const POST: APIRoute = async (context) => {
 ```
 
 Serwis automatycznie:
+
 1. ✅ Próbuje wygenerować fiszki z AI
 2. ✅ W przypadku błędu używa fallback (proste generowanie)
 3. ✅ Loguje sukces/błąd do konsoli
@@ -195,6 +195,7 @@ Serwis automatycznie:
 Tworzy nowe żądanie generacji fiszek.
 
 **Request:**
+
 ```json
 {
   "source_text": "Fotosynteza to proces biochemiczny...",
@@ -205,6 +206,7 @@ Tworzy nowe żądanie generacji fiszek.
 ```
 
 **Response (202 Accepted):**
+
 ```json
 {
   "id": "uuid",
@@ -214,6 +216,7 @@ Tworzy nowe żądanie generacji fiszek.
 ```
 
 **Walidacja:**
+
 - `source_text`: 1-1000 znaków (wymagane)
 - `requested_count`: liczba całkowita > 0 (wymagane)
 - `language`: "PL" lub "EN" (wymagane)
@@ -224,6 +227,7 @@ Tworzy nowe żądanie generacji fiszek.
 Lista żądań generacji.
 
 **Query params:**
+
 - `status` - filtr statusu: pending, processing, succeeded, failed, timeout
 - `limit` - liczba wyników (1-100, domyślnie 20)
 - `cursor` - token paginacji
@@ -264,21 +268,21 @@ try {
 } catch (error) {
   if (error instanceof FlashcardGenerationError) {
     switch (error.code) {
-      case 'AUTH_ERROR':
+      case "AUTH_ERROR":
         // Problem z kluczem API
-        return { error: 'Błąd konfiguracji serwisu' };
-      
-      case 'RATE_LIMIT_ERROR':
+        return { error: "Błąd konfiguracji serwisu" };
+
+      case "RATE_LIMIT_ERROR":
         // Zbyt wiele zapytań
-        return { error: 'Zbyt wiele żądań. Spróbuj za chwilę.' };
-      
-      case 'SOURCE_TEXT_TOO_LONG':
+        return { error: "Zbyt wiele żądań. Spróbuj za chwilę." };
+
+      case "SOURCE_TEXT_TOO_LONG":
         // Tekst za długi
-        return { error: 'Tekst jest zbyt długi' };
-      
+        return { error: "Tekst jest zbyt długi" };
+
       default:
         // Inne błędy
-        return { error: 'Nie udało się wygenerować fiszek' };
+        return { error: "Nie udało się wygenerować fiszek" };
     }
   }
 }
@@ -302,11 +306,13 @@ const buildFlashcardsPayload = (command) => {
 ### Testowanie ręczne
 
 1. **Uruchom lokalny serwer:**
+
    ```bash
    npm run dev
    ```
 
 2. **Wyślij request do API:**
+
    ```bash
    curl -X POST http://localhost:4321/api/generation-requests \
      -H "Content-Type: application/json" \
@@ -326,27 +332,32 @@ const buildFlashcardsPayload = (command) => {
 ### Testowanie błędów
 
 **Rate limiting:**
+
 ```typescript
 // Symulacja wielu szybkich requestów
 for (let i = 0; i < 10; i++) {
-  await generateFlashcardsWithAI({ /* ... */ });
+  await generateFlashcardsWithAI({
+    /* ... */
+  });
 }
 // Powinno pokazać retry logic w logach
 ```
 
 **Nieprawidłowy klucz API:**
+
 ```typescript
 // Ustaw zły klucz w .env
-OPENROUTER_API_KEY=invalid-key
+OPENROUTER_API_KEY = invalid - key;
 // Powinno użyć fallback
 ```
 
 **Timeout:**
+
 ```typescript
 // Zmniejsz timeout
 const service = new OpenRouterService({
   /* ... */
-  timeout: 100 // 100ms - zbyt krótki
+  timeout: 100, // 100ms - zbyt krótki
 });
 // Powinno pokazać retry i eventual fallback
 ```
@@ -356,22 +367,26 @@ const service = new OpenRouterService({
 ### Co jest logowane
 
 ✅ **Sukces generowania:**
+
 ```
 Pomyślnie wygenerowano 5 fiszek z AI dla requestId: abc-123
 Użyto 842 tokenów (prompt: 156, completion: 686). Model: openai/gpt-4-turbo-preview
 ```
 
 ✅ **Fallback:**
+
 ```
 Błąd generowania fiszek z AI dla requestId: abc-123. Używam fallback. (RATE_LIMIT_ERROR)
 ```
 
 ✅ **Retry attempts:**
+
 ```
 OpenRouter request failed (attempt 1/4). Retrying in 1000ms... { error: 'Rate limit exceeded' }
 ```
 
 ⚠️ **Ostrzeżenia:**
+
 ```
 AI wygenerowało 4 fiszek, a żądano 5. Używam wygenerowanych fiszek.
 ```
@@ -389,21 +404,25 @@ AI wygenerowało 4 fiszek, a żądano 5. Używam wygenerowanych fiszek.
 ### Best Practices
 
 ✅ **Klucz API:**
+
 - Przechowywany w `.env` (nigdy w kodzie)
 - Nie logowany w błędach
 - Nie eksponowany przez API
 
 ✅ **Walidacja input:**
+
 - Maksymalna długość tekstu: 10000 znaków
 - Maksymalna liczba fiszek: 50
 - Walidacja języka: tylko PL/EN
 
 ✅ **Rate limiting:**
+
 - Automatyczny retry z exponential backoff
 - Respektowanie nagłówka Retry-After
 - Maksymalnie 3 próby
 
 ✅ **Timeout:**
+
 - 60 sekund na request
 - Abort controller dla anulowania
 - Graceful degradation do fallback
@@ -435,6 +454,7 @@ Możliwe ulepszenia w przyszłości:
 **Przyczyna:** Brak lub pusty klucz API w `.env`
 
 **Rozwiązanie:**
+
 1. Sprawdź czy plik `.env` zawiera `OPENROUTER_API_KEY`
 2. Sprawdź czy klucz zaczyna się od `sk-or-v1-`
 3. Zrestartuj serwer dev po zmianie `.env`
@@ -444,6 +464,7 @@ Możliwe ulepszenia w przyszłości:
 **Przyczyna:** Przekroczono limity OpenRouter
 
 **Rozwiązanie:**
+
 1. Poczekaj czas wskazany w komunikacie
 2. Rozważ zwiększenie limitów w OpenRouter
 3. Zaimplementuj client-side rate limiting
@@ -454,6 +475,7 @@ Możliwe ulepszenia w przyszłości:
 **Przyczyna:** Zbyt krótki lub nieklarowny tekst źródłowy
 
 **Rozwiązanie:**
+
 1. Waliduj długość tekstu (min. 50 znaków)
 2. Dodaj instrukcje dla użytkownika
 3. Rozważ użycie innego modelu (Claude vs GPT-4)
@@ -464,6 +486,7 @@ Możliwe ulepszenia w przyszłości:
 **Przyczyna:** Zbyt długie generowanie
 
 **Rozwiązanie:**
+
 1. Zmniejsz `maxTokens`
 2. Zwiększ `timeout` w konfiguracji
 3. Użyj szybszego modelu (GPT-3.5 zamiast GPT-4)

@@ -208,7 +208,7 @@ describe("updateSrs", () => {
       const dueDate = new Date(result.due_at);
       const expectedDate = new Date(reviewedAt);
       expectedDate.setDate(expectedDate.getDate() + result.interval_days);
-      
+
       // Sprawdź czy data się zgadza (może być luty lub marzec w zależności od interval)
       expect(dueDate.getMonth()).toBeGreaterThanOrEqual(reviewedAt.getMonth());
     });

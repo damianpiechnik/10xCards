@@ -382,10 +382,10 @@ const FlashcardRow = memo(
     }, [flashcard.created_at]);
 
     const cardClassName = `rounded-lg border p-4 shadow-xs ${
-      isEditing 
-        ? "border-primary/60 bg-card" 
-        : isNewlyCreated 
-          ? "border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/20" 
+      isEditing
+        ? "border-primary/60 bg-card"
+        : isNewlyCreated
+          ? "border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/20"
           : "bg-card"
     }`;
 

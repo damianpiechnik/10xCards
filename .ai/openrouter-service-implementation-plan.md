@@ -27,13 +27,13 @@ Konstruktor inicjalizuje usługę z niezbędną konfiguracją i wykonuje walidac
 
 ```typescript
 interface OpenRouterConfig {
-  apiKey: string;                    // Klucz API OpenRouter (wymagany)
-  baseUrl?: string;                  // Opcjonalny custom endpoint (domyślnie: https://openrouter.ai/api/v1)
-  defaultModel?: string;             // Domyślny model do użycia
-  defaultTemperature?: number;       // Domyślna temperatura (0.0 - 2.0)
-  defaultMaxTokens?: number;         // Domyślna maksymalna liczba tokenów
-  timeout?: number;                  // Timeout w ms (domyślnie: 60000)
-  maxRetries?: number;               // Maksymalna liczba prób retry (domyślnie: 3)
+  apiKey: string; // Klucz API OpenRouter (wymagany)
+  baseUrl?: string; // Opcjonalny custom endpoint (domyślnie: https://openrouter.ai/api/v1)
+  defaultModel?: string; // Domyślny model do użycia
+  defaultTemperature?: number; // Domyślna temperatura (0.0 - 2.0)
+  defaultMaxTokens?: number; // Domyślna maksymalna liczba tokenów
+  timeout?: number; // Timeout w ms (domyślnie: 60000)
+  maxRetries?: number; // Maksymalna liczba prób retry (domyślnie: 3)
 }
 ```
 
@@ -70,37 +70,37 @@ async completion<T = any>(params: CompletionParams): Promise<CompletionResponse<
 ```typescript
 interface CompletionParams {
   // Wiadomości
-  messages: Message[];               // Array wiadomości (wymagany)
-  
+  messages: Message[]; // Array wiadomości (wymagany)
+
   // Konfiguracja modelu
-  model?: string;                    // Nazwa modelu (opcjonalne, użyje defaultModel)
-  
+  model?: string; // Nazwa modelu (opcjonalne, użyje defaultModel)
+
   // Parametry generacji
-  temperature?: number;              // Temperatura (0.0 - 2.0)
-  maxTokens?: number;               // Maksymalna liczba tokenów
-  topP?: number;                    // Top-p sampling (0.0 - 1.0)
-  frequencyPenalty?: number;        // Frequency penalty (-2.0 - 2.0)
-  presencePenalty?: number;         // Presence penalty (-2.0 - 2.0)
-  
+  temperature?: number; // Temperatura (0.0 - 2.0)
+  maxTokens?: number; // Maksymalna liczba tokenów
+  topP?: number; // Top-p sampling (0.0 - 1.0)
+  frequencyPenalty?: number; // Frequency penalty (-2.0 - 2.0)
+  presencePenalty?: number; // Presence penalty (-2.0 - 2.0)
+
   // Structured output
-  responseFormat?: ResponseFormat;   // Schema JSON dla odpowiedzi
-  
+  responseFormat?: ResponseFormat; // Schema JSON dla odpowiedzi
+
   // Inne
-  stop?: string[];                  // Sekwencje stop
-  user?: string;                    // Identyfikator użytkownika
+  stop?: string[]; // Sekwencje stop
+  user?: string; // Identyfikator użytkownika
 }
 
 interface Message {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
 interface ResponseFormat {
-  type: 'json_schema';
+  type: "json_schema";
   json_schema: {
-    name: string;                    // Nazwa schematu
-    strict: boolean;                 // Strict mode (zalecane: true)
-    schema: JSONSchema;              // Schemat JSON
+    name: string; // Nazwa schematu
+    strict: boolean; // Strict mode (zalecane: true)
+    schema: JSONSchema; // Schemat JSON
   };
 }
 ```
@@ -109,17 +109,17 @@ interface ResponseFormat {
 
 ```typescript
 interface CompletionResponse<T> {
-  id: string;                        // ID odpowiedzi
-  model: string;                     // Użyty model
-  content: T;                        // Sparsowana zawartość (typ generyczny)
-  rawContent: string;                // Surowa zawartość
+  id: string; // ID odpowiedzi
+  model: string; // Użyty model
+  content: T; // Sparsowana zawartość (typ generyczny)
+  rawContent: string; // Surowa zawartość
   usage: {
     promptTokens: number;
     completionTokens: number;
     totalTokens: number;
   };
-  finishReason: string;              // Powód zakończenia
-  created: number;                   // Timestamp
+  finishReason: string; // Powód zakończenia
+  created: number; // Timestamp
 }
 ```
 
@@ -130,17 +130,17 @@ interface CompletionResponse<T> {
 const response = await openRouter.completion({
   messages: [
     {
-      role: 'system',
-      content: 'You are a helpful assistant that generates flashcards.'
+      role: "system",
+      content: "You are a helpful assistant that generates flashcards.",
     },
     {
-      role: 'user',
-      content: 'Generate 5 flashcards about photosynthesis.'
-    }
+      role: "user",
+      content: "Generate 5 flashcards about photosynthesis.",
+    },
   ],
-  model: 'openai/gpt-4-turbo-preview',
+  model: "openai/gpt-4-turbo-preview",
   temperature: 0.7,
-  maxTokens: 2000
+  maxTokens: 2000,
 });
 
 // Przykład 2: Użycie z response_format (structured output)
@@ -154,42 +154,42 @@ interface FlashcardSchema {
 const response = await openRouter.completion<FlashcardSchema>({
   messages: [
     {
-      role: 'system',
-      content: 'Generate flashcards in the specified JSON format.'
+      role: "system",
+      content: "Generate flashcards in the specified JSON format.",
     },
     {
-      role: 'user',
-      content: 'Generate 5 flashcards about photosynthesis.'
-    }
+      role: "user",
+      content: "Generate 5 flashcards about photosynthesis.",
+    },
   ],
-  model: 'openai/gpt-4-turbo-preview',
+  model: "openai/gpt-4-turbo-preview",
   responseFormat: {
-    type: 'json_schema',
+    type: "json_schema",
     json_schema: {
-      name: 'flashcard_generation',
+      name: "flashcard_generation",
       strict: true,
       schema: {
-        type: 'object',
+        type: "object",
         properties: {
           flashcards: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'object',
+              type: "object",
               properties: {
-                front: { type: 'string' },
-                back: { type: 'string' }
+                front: { type: "string" },
+                back: { type: "string" },
               },
-              required: ['front', 'back'],
-              additionalProperties: false
-            }
-          }
+              required: ["front", "back"],
+              additionalProperties: false,
+            },
+          },
         },
-        required: ['flashcards'],
-        additionalProperties: false
-      }
-    }
+        required: ["flashcards"],
+        additionalProperties: false,
+      },
+    },
   },
-  temperature: 0.7
+  temperature: 0.7,
 });
 
 // Dostęp do sparsowanych danych
@@ -245,6 +245,7 @@ private buildRequest(params: CompletionParams): OpenRouterRequest
 Konstruuje obiekt żądania zgodny z API OpenRouter.
 
 **Proces:**
+
 1. Walidacja wymaganych pól (messages, model)
 2. Merge parametrów użytkownika z wartościami domyślnymi
 3. Formatowanie response_format jeśli podany
@@ -260,6 +261,7 @@ private async executeRequest(request: OpenRouterRequest): Promise<OpenRouterRawR
 Wykonuje żądanie HTTP do API OpenRouter z retry logic.
 
 **Proces:**
+
 1. Ustawienie nagłówków:
    - `Authorization: Bearer ${apiKey}`
    - `Content-Type: application/json`
@@ -278,6 +280,7 @@ private parseResponse<T>(rawResponse: OpenRouterRawResponse, schema?: JSONSchema
 Parsuje surową odpowiedź z API i waliduje zgodność ze schematem.
 
 **Proces:**
+
 1. Ekstrakcja content z `choices[0].message.content`
 2. Parsowanie JSON jeśli response_format był użyty
 3. Walidacja zgodności z schematem jeśli podany
@@ -301,11 +304,13 @@ private shouldRetry(error: unknown, attempt: number): boolean
 Decyduje, czy należy ponowić żądanie na podstawie typu błędu i liczby prób.
 
 **Retry dla:**
+
 - 429 (Rate limit exceeded)
 - 500, 502, 503, 504 (Server errors)
 - Network errors
 
 **Nie retry dla:**
+
 - 401, 403 (Authorization errors)
 - 400 (Bad request)
 - Inne błędy klienta (4xx)
@@ -334,66 +339,69 @@ class OpenRouterError extends Error {
     public readonly details?: any
   ) {
     super(message);
-    this.name = 'OpenRouterError';
+    this.name = "OpenRouterError";
   }
 }
 
 // Błąd autoryzacji
 class OpenRouterAuthError extends OpenRouterError {
-  constructor(message: string = 'Invalid API key') {
-    super(message, 'AUTH_ERROR', 401);
-    this.name = 'OpenRouterAuthError';
+  constructor(message: string = "Invalid API key") {
+    super(message, "AUTH_ERROR", 401);
+    this.name = "OpenRouterAuthError";
   }
 }
 
 // Błąd rate limit
 class OpenRouterRateLimitError extends OpenRouterError {
   constructor(
-    message: string = 'Rate limit exceeded',
+    message: string = "Rate limit exceeded",
     public readonly retryAfter?: number
   ) {
-    super(message, 'RATE_LIMIT_ERROR', 429);
-    this.name = 'OpenRouterRateLimitError';
+    super(message, "RATE_LIMIT_ERROR", 429);
+    this.name = "OpenRouterRateLimitError";
   }
 }
 
 // Błąd walidacji
 class OpenRouterValidationError extends OpenRouterError {
   constructor(message: string, details?: any) {
-    super(message, 'VALIDATION_ERROR', 400, details);
-    this.name = 'OpenRouterValidationError';
+    super(message, "VALIDATION_ERROR", 400, details);
+    this.name = "OpenRouterValidationError";
   }
 }
 
 // Błąd parsowania
 class OpenRouterParseError extends OpenRouterError {
-  constructor(message: string, public readonly rawContent?: string) {
-    super(message, 'PARSE_ERROR');
-    this.name = 'OpenRouterParseError';
+  constructor(
+    message: string,
+    public readonly rawContent?: string
+  ) {
+    super(message, "PARSE_ERROR");
+    this.name = "OpenRouterParseError";
   }
 }
 
 // Błąd serwera
 class OpenRouterServerError extends OpenRouterError {
-  constructor(message: string = 'Server error', statusCode: number = 500) {
-    super(message, 'SERVER_ERROR', statusCode);
-    this.name = 'OpenRouterServerError';
+  constructor(message: string = "Server error", statusCode: number = 500) {
+    super(message, "SERVER_ERROR", statusCode);
+    this.name = "OpenRouterServerError";
   }
 }
 
 // Błąd timeout
 class OpenRouterTimeoutError extends OpenRouterError {
-  constructor(message: string = 'Request timeout') {
-    super(message, 'TIMEOUT_ERROR');
-    this.name = 'OpenRouterTimeoutError';
+  constructor(message: string = "Request timeout") {
+    super(message, "TIMEOUT_ERROR");
+    this.name = "OpenRouterTimeoutError";
   }
 }
 
 // Błąd sieci
 class OpenRouterNetworkError extends OpenRouterError {
-  constructor(message: string = 'Network error') {
-    super(message, 'NETWORK_ERROR');
-    this.name = 'OpenRouterNetworkError';
+  constructor(message: string = "Network error") {
+    super(message, "NETWORK_ERROR");
+    this.name = "OpenRouterNetworkError";
   }
 }
 ```
@@ -401,63 +409,79 @@ class OpenRouterNetworkError extends OpenRouterError {
 ### 5.2 Scenariusze Błędów i Ich Obsługa
 
 #### Scenariusz 1: Błąd Autoryzacji (401)
+
 **Przyczyna:** Nieprawidłowy lub brakujący klucz API  
 **Obsługa:**
+
 - Rzucenie `OpenRouterAuthError`
 - Brak retry
 - Logowanie błędu
 - Komunikat: "Invalid API key. Please check your OpenRouter API key."
 
 #### Scenariusz 2: Rate Limit Exceeded (429)
+
 **Przyczyna:** Przekroczenie limitów API  
 **Obsługa:**
+
 - Rzucenie `OpenRouterRateLimitError` z `retryAfter`
 - Retry z exponential backoff
 - Respektowanie nagłówka `Retry-After`
 - Komunikat: "Rate limit exceeded. Please try again later."
 
 #### Scenariusz 3: Błąd Serwera (5xx)
+
 **Przyczyna:** Problemy po stronie OpenRouter  
 **Obsługa:**
+
 - Rzucenie `OpenRouterServerError`
 - Retry do `maxRetries`
 - Exponential backoff
 - Komunikat: "OpenRouter service temporarily unavailable. Please try again."
 
 #### Scenariusz 4: Nieprawidłowe Żądanie (400)
+
 **Przyczyna:** Błędne parametry lub schemat  
 **Obsługa:**
+
 - Rzucenie `OpenRouterValidationError` z details
 - Brak retry
 - Walidacja przed wysłaniem
 - Komunikat: Szczegóły z API
 
 #### Scenariusz 5: Timeout
+
 **Przyczyna:** Zbyt długa generacja  
 **Obsługa:**
+
 - Rzucenie `OpenRouterTimeoutError`
 - Opcjonalny retry z większym timeout
 - Komunikat: "Request timeout. Try reducing max_tokens or try again."
 
 #### Scenariusz 6: Błąd Parsowania Odpowiedzi
+
 **Przyczyna:** Nieprawidłowy format JSON w odpowiedzi  
 **Obsługa:**
+
 - Rzucenie `OpenRouterParseError` z rawContent
 - Brak retry
 - Logowanie surowej odpowiedzi
 - Komunikat: "Failed to parse response. The model may not support structured output."
 
 #### Scenariusz 7: Błąd Walidacji Schematu
+
 **Przyczyna:** Odpowiedź nie zgadza się ze schematem  
 **Obsługa:**
+
 - Rzucenie `OpenRouterValidationError`
 - Logowanie błędów walidacji
 - Opcjonalny retry (1 próba)
 - Komunikat: Szczegóły niezgodności
 
 #### Scenariusz 8: Błąd Sieci
+
 **Przyczyna:** Brak połączenia internetowego  
 **Obsługa:**
+
 - Rzucenie `OpenRouterNetworkError`
 - Retry z exponential backoff
 - Komunikat: "Network error. Please check your internet connection."
@@ -467,29 +491,31 @@ class OpenRouterNetworkError extends OpenRouterError {
 ```typescript
 try {
   const response = await openRouter.completion({
-    messages: [/* ... */],
-    model: 'openai/gpt-4-turbo-preview'
+    messages: [
+      /* ... */
+    ],
+    model: "openai/gpt-4-turbo-preview",
   });
 } catch (error) {
   if (error instanceof OpenRouterAuthError) {
     // Przekieruj do strony konfiguracji API key
-    console.error('Authentication failed:', error.message);
+    console.error("Authentication failed:", error.message);
   } else if (error instanceof OpenRouterRateLimitError) {
     // Poczekaj i spróbuj ponownie
     const retryAfter = error.retryAfter || 60;
     console.error(`Rate limited. Retry after ${retryAfter}s`);
   } else if (error instanceof OpenRouterValidationError) {
     // Pokaż użytkownikowi błędy walidacji
-    console.error('Validation error:', error.details);
+    console.error("Validation error:", error.details);
   } else if (error instanceof OpenRouterParseError) {
     // Model nie obsługuje structured output
-    console.error('Parse error. Raw content:', error.rawContent);
+    console.error("Parse error. Raw content:", error.rawContent);
   } else if (error instanceof OpenRouterTimeoutError) {
     // Zasugeruj zmniejszenie max_tokens
-    console.error('Request timeout');
+    console.error("Request timeout");
   } else {
     // Ogólny błąd
-    console.error('Unknown error:', error);
+    console.error("Unknown error:", error);
   }
 }
 ```
@@ -568,12 +594,15 @@ try {
 ### Krok 1: Przygotowanie Środowiska
 
 **Zadania:**
+
 1. Utworzenie pliku `.env` z kluczem API:
+
    ```env
    OPENROUTER_API_KEY=sk-or-v1-xxxxx
    ```
 
 2. Aktualizacja `.env.example`:
+
    ```env
    OPENROUTER_API_KEY=your_api_key_here
    ```
@@ -586,6 +615,7 @@ try {
    ```
 
 **Struktura katalogów:**
+
 ```
 src/
   lib/
@@ -616,13 +646,13 @@ export interface OpenRouterConfig {
 
 // Messages
 export interface Message {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
 // JSON Schema
 export interface JSONSchema {
-  type: 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null';
+  type: "object" | "array" | "string" | "number" | "boolean" | "null";
   properties?: Record<string, JSONSchema>;
   items?: JSONSchema;
   required?: string[];
@@ -634,7 +664,7 @@ export interface JSONSchema {
 
 // Response Format
 export interface ResponseFormat {
-  type: 'json_schema';
+  type: "json_schema";
   json_schema: {
     name: string;
     strict: boolean;
@@ -719,66 +749,69 @@ export class OpenRouterError extends Error {
     public readonly details?: any
   ) {
     super(message);
-    this.name = 'OpenRouterError';
+    this.name = "OpenRouterError";
     Object.setPrototypeOf(this, OpenRouterError.prototype);
   }
 }
 
 export class OpenRouterAuthError extends OpenRouterError {
-  constructor(message: string = 'Invalid API key') {
-    super(message, 'AUTH_ERROR', 401);
-    this.name = 'OpenRouterAuthError';
+  constructor(message: string = "Invalid API key") {
+    super(message, "AUTH_ERROR", 401);
+    this.name = "OpenRouterAuthError";
     Object.setPrototypeOf(this, OpenRouterAuthError.prototype);
   }
 }
 
 export class OpenRouterRateLimitError extends OpenRouterError {
   constructor(
-    message: string = 'Rate limit exceeded',
+    message: string = "Rate limit exceeded",
     public readonly retryAfter?: number
   ) {
-    super(message, 'RATE_LIMIT_ERROR', 429);
-    this.name = 'OpenRouterRateLimitError';
+    super(message, "RATE_LIMIT_ERROR", 429);
+    this.name = "OpenRouterRateLimitError";
     Object.setPrototypeOf(this, OpenRouterRateLimitError.prototype);
   }
 }
 
 export class OpenRouterValidationError extends OpenRouterError {
   constructor(message: string, details?: any) {
-    super(message, 'VALIDATION_ERROR', 400, details);
-    this.name = 'OpenRouterValidationError';
+    super(message, "VALIDATION_ERROR", 400, details);
+    this.name = "OpenRouterValidationError";
     Object.setPrototypeOf(this, OpenRouterValidationError.prototype);
   }
 }
 
 export class OpenRouterParseError extends OpenRouterError {
-  constructor(message: string, public readonly rawContent?: string) {
-    super(message, 'PARSE_ERROR');
-    this.name = 'OpenRouterParseError';
+  constructor(
+    message: string,
+    public readonly rawContent?: string
+  ) {
+    super(message, "PARSE_ERROR");
+    this.name = "OpenRouterParseError";
     Object.setPrototypeOf(this, OpenRouterParseError.prototype);
   }
 }
 
 export class OpenRouterServerError extends OpenRouterError {
-  constructor(message: string = 'Server error', statusCode: number = 500) {
-    super(message, 'SERVER_ERROR', statusCode);
-    this.name = 'OpenRouterServerError';
+  constructor(message: string = "Server error", statusCode: number = 500) {
+    super(message, "SERVER_ERROR", statusCode);
+    this.name = "OpenRouterServerError";
     Object.setPrototypeOf(this, OpenRouterServerError.prototype);
   }
 }
 
 export class OpenRouterTimeoutError extends OpenRouterError {
-  constructor(message: string = 'Request timeout') {
-    super(message, 'TIMEOUT_ERROR');
-    this.name = 'OpenRouterTimeoutError';
+  constructor(message: string = "Request timeout") {
+    super(message, "TIMEOUT_ERROR");
+    this.name = "OpenRouterTimeoutError";
     Object.setPrototypeOf(this, OpenRouterTimeoutError.prototype);
   }
 }
 
 export class OpenRouterNetworkError extends OpenRouterError {
-  constructor(message: string = 'Network error') {
-    super(message, 'NETWORK_ERROR');
-    this.name = 'OpenRouterNetworkError';
+  constructor(message: string = "Network error") {
+    super(message, "NETWORK_ERROR");
+    this.name = "OpenRouterNetworkError";
     Object.setPrototypeOf(this, OpenRouterNetworkError.prototype);
   }
 }
@@ -789,18 +822,15 @@ export class OpenRouterNetworkError extends OpenRouterError {
 **Plik: `src/lib/services/openrouter/openrouter.utils.ts`**
 
 ```typescript
-import type { JSONSchema } from './openrouter.types';
-import { OpenRouterValidationError } from './openrouter.errors';
+import type { JSONSchema } from "./openrouter.types";
+import { OpenRouterValidationError } from "./openrouter.errors";
 
 /**
  * Waliduje parametr temperature
  */
 export function validateTemperature(temperature: number): void {
   if (temperature < 0 || temperature > 2) {
-    throw new OpenRouterValidationError(
-      'Temperature must be between 0 and 2',
-      { temperature }
-    );
+    throw new OpenRouterValidationError("Temperature must be between 0 and 2", { temperature });
   }
 }
 
@@ -809,10 +839,7 @@ export function validateTemperature(temperature: number): void {
  */
 export function validateTopP(topP: number): void {
   if (topP < 0 || topP > 1) {
-    throw new OpenRouterValidationError(
-      'Top-p must be between 0 and 1',
-      { topP }
-    );
+    throw new OpenRouterValidationError("Top-p must be between 0 and 1", { topP });
   }
 }
 
@@ -821,10 +848,7 @@ export function validateTopP(topP: number): void {
  */
 export function validatePenalty(penalty: number, name: string): void {
   if (penalty < -2 || penalty > 2) {
-    throw new OpenRouterValidationError(
-      `${name} must be between -2 and 2`,
-      { [name]: penalty }
-    );
+    throw new OpenRouterValidationError(`${name} must be between -2 and 2`, { [name]: penalty });
   }
 }
 
@@ -836,27 +860,27 @@ export function validateSchema(schema: JSONSchema): { valid: boolean; errors: st
 
   // Sprawdzenie typu
   if (!schema.type) {
-    errors.push('Schema must have a type property');
+    errors.push("Schema must have a type property");
   }
 
   // Sprawdzenie properties dla object
-  if (schema.type === 'object') {
+  if (schema.type === "object") {
     if (!schema.properties) {
-      errors.push('Object schema must have properties');
+      errors.push("Object schema must have properties");
     }
     if (!schema.additionalProperties !== undefined && schema.additionalProperties !== false) {
-      errors.push('For strict mode, additionalProperties should be false');
+      errors.push("For strict mode, additionalProperties should be false");
     }
   }
 
   // Sprawdzenie items dla array
-  if (schema.type === 'array' && !schema.items) {
-    errors.push('Array schema must have items');
+  if (schema.type === "array" && !schema.items) {
+    errors.push("Array schema must have items");
   }
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -873,7 +897,7 @@ export function calculateBackoff(attempt: number): number {
  * Sleep helper dla retry logic
  */
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -881,7 +905,7 @@ export function sleep(ms: number): Promise<void> {
  */
 export function isRetryableError(error: any): boolean {
   // Network errors
-  if (error.code === 'ECONNRESET' || error.code === 'ETIMEDOUT' || error.code === 'ENOTFOUND') {
+  if (error.code === "ECONNRESET" || error.code === "ETIMEDOUT" || error.code === "ENOTFOUND") {
     return true;
   }
 
@@ -898,7 +922,7 @@ export function isRetryableError(error: any): boolean {
  * Parsuje nagłówek Retry-After
  */
 export function parseRetryAfter(headers: Record<string, string>): number | undefined {
-  const retryAfter = headers['retry-after'] || headers['Retry-After'];
+  const retryAfter = headers["retry-after"] || headers["Retry-After"];
   if (!retryAfter) return undefined;
 
   // Jeśli to liczba sekund
@@ -928,8 +952,8 @@ import type {
   CompletionResponse,
   OpenRouterRequest,
   OpenRouterRawResponse,
-  JSONSchema
-} from './openrouter.types';
+  JSONSchema,
+} from "./openrouter.types";
 
 import {
   OpenRouterError,
@@ -939,8 +963,8 @@ import {
   OpenRouterParseError,
   OpenRouterServerError,
   OpenRouterTimeoutError,
-  OpenRouterNetworkError
-} from './openrouter.errors';
+  OpenRouterNetworkError,
+} from "./openrouter.errors";
 
 import {
   validateTemperature,
@@ -950,8 +974,8 @@ import {
   calculateBackoff,
   sleep,
   isRetryableError,
-  parseRetryAfter
-} from './openrouter.utils';
+  parseRetryAfter,
+} from "./openrouter.utils";
 
 export class OpenRouterService {
   private readonly apiKey: string;
@@ -964,13 +988,13 @@ export class OpenRouterService {
 
   constructor(config: OpenRouterConfig) {
     // Walidacja klucza API
-    if (!config.apiKey || config.apiKey.trim() === '') {
-      throw new OpenRouterAuthError('API key is required');
+    if (!config.apiKey || config.apiKey.trim() === "") {
+      throw new OpenRouterAuthError("API key is required");
     }
 
     // Inicjalizacja pól
     this.apiKey = config.apiKey;
-    this.baseUrl = config.baseUrl || 'https://openrouter.ai/api/v1';
+    this.baseUrl = config.baseUrl || "https://openrouter.ai/api/v1";
     this.defaultModel = config.defaultModel;
     this.defaultTemperature = config.defaultTemperature ?? 0.7;
     this.defaultMaxTokens = config.defaultMaxTokens;
@@ -986,14 +1010,14 @@ export class OpenRouterService {
   /**
    * Dostęp do konfiguracji (bez klucza API)
    */
-  get config(): Readonly<Omit<OpenRouterConfig, 'apiKey'>> {
+  get config(): Readonly<Omit<OpenRouterConfig, "apiKey">> {
     return {
       baseUrl: this.baseUrl,
       defaultModel: this.defaultModel,
       defaultTemperature: this.defaultTemperature,
       defaultMaxTokens: this.defaultMaxTokens,
       timeout: this.timeout,
-      maxRetries: this.maxRetries
+      maxRetries: this.maxRetries,
     };
   }
 
@@ -1018,7 +1042,7 @@ async completion<T = any>(params: CompletionParams): Promise<CompletionResponse<
 
   // Wykonanie żądania z retry logic
   let lastError: Error | undefined;
-  
+
   for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
     try {
       const rawResponse = await this.executeRequest(request);
@@ -1029,7 +1053,7 @@ async completion<T = any>(params: CompletionParams): Promise<CompletionResponse<
 
       // Sprawdzenie czy należy retry
       const shouldRetry = attempt < this.maxRetries && this.shouldRetry(error);
-      
+
       if (!shouldRetry) {
         throw this.handleError(error);
       }
@@ -1241,7 +1265,7 @@ private parseResponse<T>(
 
   // Parsowanie content
   let content: T;
-  
+
   if (schema) {
     // Jeśli jest schemat, parsujemy JSON
     try {
@@ -1334,7 +1358,7 @@ private handleError(error: unknown): never {
 
 ```typescript
 // Service
-export { OpenRouterService } from './openrouter.service';
+export { OpenRouterService } from "./openrouter.service";
 
 // Types
 export type {
@@ -1345,8 +1369,8 @@ export type {
   CompletionParams,
   CompletionResponse,
   OpenRouterRawResponse,
-  OpenRouterRequest
-} from './openrouter.types';
+  OpenRouterRequest,
+} from "./openrouter.types";
 
 // Errors
 export {
@@ -1357,14 +1381,11 @@ export {
   OpenRouterParseError,
   OpenRouterServerError,
   OpenRouterTimeoutError,
-  OpenRouterNetworkError
-} from './openrouter.errors';
+  OpenRouterNetworkError,
+} from "./openrouter.errors";
 
 // Utils (jeśli potrzebne publicznie)
-export {
-  validateSchema,
-  calculateBackoff
-} from './openrouter.utils';
+export { validateSchema, calculateBackoff } from "./openrouter.utils";
 ```
 
 ### Krok 9: Utworzenie Instancji Usługi (Singleton Pattern)
@@ -1372,23 +1393,23 @@ export {
 **Plik: `src/lib/services/openrouter/openrouter.instance.ts`**
 
 ```typescript
-import { OpenRouterService } from './openrouter.service';
+import { OpenRouterService } from "./openrouter.service";
 
 // Pobranie klucza API ze zmiennych środowiskowych
 const apiKey = import.meta.env.OPENROUTER_API_KEY;
 
 if (!apiKey) {
-  throw new Error('OPENROUTER_API_KEY environment variable is required');
+  throw new Error("OPENROUTER_API_KEY environment variable is required");
 }
 
 // Utworzenie instancji
 export const openRouter = new OpenRouterService({
   apiKey,
-  defaultModel: 'openai/gpt-4-turbo-preview',
+  defaultModel: "openai/gpt-4-turbo-preview",
   defaultTemperature: 0.7,
   defaultMaxTokens: 2000,
   timeout: 60000,
-  maxRetries: 3
+  maxRetries: 3,
 });
 ```
 
@@ -1398,7 +1419,7 @@ export const openRouter = new OpenRouterService({
 // ... poprzednie exporty ...
 
 // Singleton instance
-export { openRouter } from './openrouter.instance';
+export { openRouter } from "./openrouter.instance";
 ```
 
 ### Krok 10: Przykłady Użycia
@@ -1406,21 +1427,21 @@ export { openRouter } from './openrouter.instance';
 **Plik: `src/lib/services/openrouter/examples.ts`** (opcjonalny, do dokumentacji)
 
 ```typescript
-import { openRouter, type ResponseFormat } from './index';
+import { openRouter, type ResponseFormat } from "./index";
 
 // Przykład 1: Podstawowe użycie
 async function example1() {
   const response = await openRouter.completion({
     messages: [
       {
-        role: 'system',
-        content: 'You are a helpful assistant.'
+        role: "system",
+        content: "You are a helpful assistant.",
       },
       {
-        role: 'user',
-        content: 'What is the capital of France?'
-      }
-    ]
+        role: "user",
+        content: "What is the capital of France?",
+      },
+    ],
   });
 
   console.log(response.content); // Paris
@@ -1431,63 +1452,63 @@ interface FlashcardSchema {
   flashcards: Array<{
     front: string;
     back: string;
-    difficulty?: 'easy' | 'medium' | 'hard';
+    difficulty?: "easy" | "medium" | "hard";
   }>;
 }
 
 async function example2() {
   const responseFormat: ResponseFormat = {
-    type: 'json_schema',
+    type: "json_schema",
     json_schema: {
-      name: 'flashcard_generation',
+      name: "flashcard_generation",
       strict: true,
       schema: {
-        type: 'object',
+        type: "object",
         properties: {
           flashcards: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'object',
+              type: "object",
               properties: {
-                front: { type: 'string' },
-                back: { type: 'string' },
+                front: { type: "string" },
+                back: { type: "string" },
                 difficulty: {
-                  type: 'string',
-                  enum: ['easy', 'medium', 'hard']
-                }
+                  type: "string",
+                  enum: ["easy", "medium", "hard"],
+                },
               },
-              required: ['front', 'back'],
-              additionalProperties: false
-            }
-          }
+              required: ["front", "back"],
+              additionalProperties: false,
+            },
+          },
         },
-        required: ['flashcards'],
-        additionalProperties: false
-      }
-    }
+        required: ["flashcards"],
+        additionalProperties: false,
+      },
+    },
   };
 
   const response = await openRouter.completion<FlashcardSchema>({
     messages: [
       {
-        role: 'system',
-        content: 'Generate flashcards in the specified JSON format. Assign difficulty based on complexity.'
+        role: "system",
+        content: "Generate flashcards in the specified JSON format. Assign difficulty based on complexity.",
       },
       {
-        role: 'user',
-        content: 'Generate 5 flashcards about photosynthesis.'
-      }
+        role: "user",
+        content: "Generate 5 flashcards about photosynthesis.",
+      },
     ],
     responseFormat,
     temperature: 0.7,
-    maxTokens: 2000
+    maxTokens: 2000,
   });
 
   // Type-safe access
-  response.content.flashcards.forEach(card => {
+  response.content.flashcards.forEach((card) => {
     console.log(`Q: ${card.front}`);
     console.log(`A: ${card.back}`);
-    console.log(`Difficulty: ${card.difficulty || 'not set'}`);
+    console.log(`Difficulty: ${card.difficulty || "not set"}`);
   });
 }
 
@@ -1497,25 +1518,24 @@ async function example3() {
     const response = await openRouter.completion({
       messages: [
         {
-          role: 'user',
-          content: 'Hello!'
-        }
+          role: "user",
+          content: "Hello!",
+        },
       ],
-      model: 'openai/gpt-4-turbo-preview'
+      model: "openai/gpt-4-turbo-preview",
     });
-    
+
     console.log(response.content);
     console.log(`Used ${response.usage.totalTokens} tokens`);
-    
   } catch (error) {
     if (error instanceof OpenRouterAuthError) {
-      console.error('Authentication failed. Check your API key.');
+      console.error("Authentication failed. Check your API key.");
     } else if (error instanceof OpenRouterRateLimitError) {
       console.error(`Rate limited. Retry after ${error.retryAfter}s`);
     } else if (error instanceof OpenRouterValidationError) {
-      console.error('Validation error:', error.details);
+      console.error("Validation error:", error.details);
     } else {
-      console.error('Unexpected error:', error);
+      console.error("Unexpected error:", error);
     }
   }
 }
@@ -1525,20 +1545,20 @@ async function example4() {
   const response = await openRouter.completion({
     messages: [
       {
-        role: 'system',
-        content: 'You are a creative writer.'
+        role: "system",
+        content: "You are a creative writer.",
       },
       {
-        role: 'user',
-        content: 'Write a short story about a robot.'
-      }
+        role: "user",
+        content: "Write a short story about a robot.",
+      },
     ],
-    model: 'anthropic/claude-3.5-sonnet',
+    model: "anthropic/claude-3.5-sonnet",
     temperature: 0.9,
     maxTokens: 1000,
     topP: 0.95,
     frequencyPenalty: 0.5,
-    presencePenalty: 0.5
+    presencePenalty: 0.5,
   });
 
   console.log(response.content);
@@ -1552,44 +1572,42 @@ async function example4() {
 Struktura testów (szkielet):
 
 ```typescript
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { OpenRouterService } from './openrouter.service';
-import { OpenRouterAuthError, OpenRouterValidationError } from './openrouter.errors';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { OpenRouterService } from "./openrouter.service";
+import { OpenRouterAuthError, OpenRouterValidationError } from "./openrouter.errors";
 
-describe('OpenRouterService', () => {
-  describe('constructor', () => {
-    it('should throw error if API key is missing', () => {
+describe("OpenRouterService", () => {
+  describe("constructor", () => {
+    it("should throw error if API key is missing", () => {
       expect(() => {
-        new OpenRouterService({ apiKey: '' });
+        new OpenRouterService({ apiKey: "" });
       }).toThrow(OpenRouterAuthError);
     });
 
-    it('should initialize with valid config', () => {
+    it("should initialize with valid config", () => {
       const service = new OpenRouterService({
-        apiKey: 'test-key',
-        defaultModel: 'test-model'
+        apiKey: "test-key",
+        defaultModel: "test-model",
       });
 
-      expect(service.config.defaultModel).toBe('test-model');
+      expect(service.config.defaultModel).toBe("test-model");
     });
   });
 
-  describe('validateParams', () => {
-    it('should throw error if messages are empty', async () => {
-      const service = new OpenRouterService({ apiKey: 'test-key' });
+  describe("validateParams", () => {
+    it("should throw error if messages are empty", async () => {
+      const service = new OpenRouterService({ apiKey: "test-key" });
 
-      await expect(
-        service.completion({ messages: [] })
-      ).rejects.toThrow(OpenRouterValidationError);
+      await expect(service.completion({ messages: [] })).rejects.toThrow(OpenRouterValidationError);
     });
 
-    it('should throw error if temperature is out of range', async () => {
-      const service = new OpenRouterService({ apiKey: 'test-key' });
+    it("should throw error if temperature is out of range", async () => {
+      const service = new OpenRouterService({ apiKey: "test-key" });
 
       await expect(
         service.completion({
-          messages: [{ role: 'user', content: 'test' }],
-          temperature: 3
+          messages: [{ role: "user", content: "test" }],
+          temperature: 3,
         })
       ).rejects.toThrow(OpenRouterValidationError);
     });
@@ -1622,10 +1640,10 @@ OPENROUTER_API_KEY=sk-or-v1-xxxxx
 import { openRouter } from '@/lib/services/openrouter';
 
 const response = await openRouter.completion({
-  messages: [
-    { role: 'system', content: 'You are a helpful assistant.' },
-    { role: 'user', content: 'What is TypeScript?' }
-  ]
+messages: [
+{ role: 'system', content: 'You are a helpful assistant.' },
+{ role: 'user', content: 'What is TypeScript?' }
+]
 });
 
 console.log(response.content);
@@ -1635,29 +1653,29 @@ console.log(response.content);
 
 \`\`\`typescript
 interface MySchema {
-  items: string[];
+items: string[];
 }
 
 const response = await openRouter.completion<MySchema>({
-  messages: [/* ... */],
-  responseFormat: {
-    type: 'json_schema',
-    json_schema: {
-      name: 'my_schema',
-      strict: true,
-      schema: {
-        type: 'object',
-        properties: {
-          items: {
-            type: 'array',
-            items: { type: 'string' }
-          }
-        },
-        required: ['items'],
-        additionalProperties: false
-      }
-    }
-  }
+messages: [/* ... */],
+responseFormat: {
+type: 'json_schema',
+json_schema: {
+name: 'my_schema',
+strict: true,
+schema: {
+type: 'object',
+properties: {
+items: {
+type: 'array',
+items: { type: 'string' }
+}
+},
+required: ['items'],
+additionalProperties: false
+}
+}
+}
 });
 
 console.log(response.content.items); // Type-safe!
@@ -1675,8 +1693,8 @@ Zobacz pełną dokumentację w `examples.ts`.
 **Plik: `src/pages/api/generation-requests/index.ts`**
 
 ```typescript
-import { openRouter } from '@/lib/services/openrouter';
-import type { ResponseFormat } from '@/lib/services/openrouter';
+import { openRouter } from "@/lib/services/openrouter";
+import type { ResponseFormat } from "@/lib/services/openrouter";
 
 export async function POST({ request }: { request: Request }) {
   try {
@@ -1684,68 +1702,74 @@ export async function POST({ request }: { request: Request }) {
 
     // Definiowanie schematu dla fiszek
     const responseFormat: ResponseFormat = {
-      type: 'json_schema',
+      type: "json_schema",
       json_schema: {
-        name: 'flashcard_generation',
+        name: "flashcard_generation",
         strict: true,
         schema: {
-          type: 'object',
+          type: "object",
           properties: {
             flashcards: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'object',
+                type: "object",
                 properties: {
-                  front: { type: 'string' },
-                  back: { type: 'string' }
+                  front: { type: "string" },
+                  back: { type: "string" },
                 },
-                required: ['front', 'back'],
-                additionalProperties: false
-              }
-            }
+                required: ["front", "back"],
+                additionalProperties: false,
+              },
+            },
           },
-          required: ['flashcards'],
-          additionalProperties: false
-        }
-      }
+          required: ["flashcards"],
+          additionalProperties: false,
+        },
+      },
     };
 
     // Wywołanie OpenRouter
     const response = await openRouter.completion({
       messages: [
         {
-          role: 'system',
-          content: 'You are an expert at creating educational flashcards. Generate clear, concise flashcards based on the provided text.'
+          role: "system",
+          content:
+            "You are an expert at creating educational flashcards. Generate clear, concise flashcards based on the provided text.",
         },
         {
-          role: 'user',
-          content: `Generate ${count} flashcards based on the following text:\n\n${text}`
-        }
+          role: "user",
+          content: `Generate ${count} flashcards based on the following text:\n\n${text}`,
+        },
       ],
-      model: 'openai/gpt-4-turbo-preview',
+      model: "openai/gpt-4-turbo-preview",
       responseFormat,
       temperature: 0.7,
-      maxTokens: 2000
+      maxTokens: 2000,
     });
 
-    return new Response(JSON.stringify({
-      flashcards: response.content.flashcards,
-      usage: response.usage
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-
+    return new Response(
+      JSON.stringify({
+        flashcards: response.content.flashcards,
+        usage: response.usage,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     // Obsługa błędów z OpenRouter
     if (error instanceof OpenRouterError) {
-      return new Response(JSON.stringify({
-        error: error.message,
-        code: error.code
-      }), {
-        status: error.statusCode || 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({
+          error: error.message,
+          code: error.code,
+        }),
+        {
+          status: error.statusCode || 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     throw error;

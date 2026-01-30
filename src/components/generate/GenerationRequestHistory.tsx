@@ -13,8 +13,7 @@ type GenerationStatus = GenerationRequestSummaryDTO["status"];
 const buildDetailsHref = (requestId: string, status: GenerationStatus) =>
   isActiveStatus(status) ? `/generation-requests/${requestId}/processing` : `/generation-requests/${requestId}`;
 
-const getDetailsLabel = (status: GenerationStatus) =>
-  isActiveStatus(status) ? "Status" : "Szczegóły";
+const getDetailsLabel = (status: GenerationStatus) => (isActiveStatus(status) ? "Status" : "Szczegóły");
 
 const GenerationRequestHistory = () => {
   const { session, isLoading: isSessionLoading } = useAuthSession();
@@ -111,7 +110,9 @@ const GenerationRequestHistory = () => {
                   <span>Liczba fiszek: {item.requested_count}</span>
                   <span>Język: {item.language}</span>
                   {item.model ? <span>Model: {item.model}</span> : null}
-                  {item.completed_at ? <span>Zakończono: {new Date(item.completed_at).toLocaleString("pl-PL")}</span> : null}
+                  {item.completed_at ? (
+                    <span>Zakończono: {new Date(item.completed_at).toLocaleString("pl-PL")}</span>
+                  ) : null}
                 </div>
               </li>
             ))}

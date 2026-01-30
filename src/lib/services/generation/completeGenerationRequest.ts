@@ -62,9 +62,7 @@ export const completeGenerationRequest = async (
 
     // Oznacz jako failed i zwróć błąd do użytkownika
     const errorMessage =
-      error instanceof FlashcardGenerationError
-        ? error.message
-        : "Nieoczekiwany błąd podczas generowania fiszek z AI.";
+      error instanceof FlashcardGenerationError ? error.message : "Nieoczekiwany błąd podczas generowania fiszek z AI.";
 
     await markFailed(errorMessage);
     throw new GenerationServiceError(errorMessage, 500);

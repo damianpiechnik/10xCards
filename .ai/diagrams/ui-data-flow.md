@@ -16,28 +16,28 @@ flowchart TD
         UI_LIB["Biblioteka<br/>FlashcardList, Manual"]
         UI_REV["Powtórki<br/>ReviewQueue, Session"]
     end
-    
+
     subgraph "Warstwa logiki biznesowej Custom Hooks"
         HOOK_AUTH["useAuthSession<br/>Zarządzanie sesją"]
         HOOK_GEN["useCreateGenerationRequest<br/>Tworzenie zleceń"]
         HOOK_LIB["useFlashcardList<br/>CRUD fiszek"]
         HOOK_REV["useReviewQueue<br/>Kolejka powtórek"]
     end
-    
+
     subgraph "Warstwa API REST Endpoints"
         API_AUTH["/api/auth/*<br/>Login, Register, Reset"]
         API_GEN["/api/generation-requests/*<br/>Create, List, Details"]
         API_FLASH["/api/flashcards/*<br/>CRUD operations"]
         API_REV["/api/reviews/*<br/>Queue, Submit"]
     end
-    
+
     subgraph "Warstwa persystencji Backend Services"
         SB_AUTH["Supabase Auth<br/>JWT tokens"]
         SB_DB["Supabase Database<br/>PostgreSQL"]
         AI_SERVICE["OpenRouter<br/>AI generation"]
         SRS_ENGINE["SRS Algorithm<br/>Obliczenia powtórek"]
     end
-    
+
     UI_AUTH --> HOOK_AUTH
     UI_GEN --> HOOK_AUTH
     UI_GEN --> HOOK_GEN
@@ -45,30 +45,30 @@ flowchart TD
     UI_LIB --> HOOK_LIB
     UI_REV --> HOOK_AUTH
     UI_REV --> HOOK_REV
-    
+
     HOOK_AUTH --> API_AUTH
     HOOK_GEN --> API_GEN
     HOOK_LIB --> API_FLASH
     HOOK_REV --> API_REV
-    
+
     API_AUTH --> SB_AUTH
     API_GEN --> SB_DB
     API_GEN -.wywołuje.-> AI_SERVICE
     API_FLASH --> SB_DB
     API_REV --> SB_DB
     API_REV -.używa.-> SRS_ENGINE
-    
+
     SB_AUTH -.token.-> HOOK_AUTH
     SB_DB -.dane.-> HOOK_GEN
     SB_DB -.dane.-> HOOK_LIB
     SB_DB -.dane.-> HOOK_REV
     AI_SERVICE -.fiszki.-> API_GEN
-    
+
     classDef uiCls fill:#e1f5ff,stroke:#0288d1,stroke-width:2px
     classDef hookCls fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef apiCls fill:#ffebee,stroke:#c62828,stroke-width:2px
     classDef backendCls fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    
+
     class UI_AUTH,UI_GEN,UI_LIB,UI_REV uiCls
     class HOOK_AUTH,HOOK_GEN,HOOK_LIB,HOOK_REV hookCls
     class API_AUTH,API_GEN,API_FLASH,API_REV apiCls
@@ -86,7 +86,7 @@ sequenceDiagram
     participant useAuthSession
     participant API
     participant Supabase
-    
+
     User->>SignInForm: Wpisuje email + hasło
     SignInForm->>SignInForm: Walidacja lokalna
     SignInForm->>API: POST /api/auth/sign-in
@@ -108,7 +108,7 @@ sequenceDiagram
     participant API
     participant Database
     participant OpenRouter
-    
+
     User->>GenerationForm: Wkleja tekst + parametry
     GenerationForm->>GenerationForm: Walidacja (max 1000 znaków)
     GenerationForm->>useCreateGenerationRequest: submit(payload, token)
@@ -116,13 +116,13 @@ sequenceDiagram
     API->>Database: INSERT generation_request (status: pending)
     API-->>GenerationForm: { id: "abc-123", status: "pending" }
     GenerationForm-->>User: Redirect do /processing
-    
+
     Note over API,OpenRouter: Background processing
     API->>OpenRouter: Generate flashcards
     OpenRouter-->>API: [{ front, back }, ...]
     API->>Database: INSERT flashcards (x10)
     API->>Database: UPDATE generation_request (status: completed)
-    
+
     User->>API: GET /api/generation-requests/abc-123 (polling)
     API->>Database: SELECT request + flashcards
     Database-->>API: Data
@@ -138,7 +138,7 @@ sequenceDiagram
     participant useFlashcardList
     participant API
     participant Database
-    
+
     User->>FlashcardList: Otwiera /library
     FlashcardList->>useFlashcardList: Inicjalizacja
     useFlashcardList->>API: GET /api/flashcards?limit=20
@@ -147,7 +147,7 @@ sequenceDiagram
     API-->>useFlashcardList: { items: [...] }
     useFlashcardList-->>FlashcardList: Aktualizacja stanu
     FlashcardList-->>User: Wyświetla 20 fiszek
-    
+
     User->>FlashcardList: Klika "Edytuj inline"
     FlashcardList->>FlashcardList: Pokazuje formularz
     User->>FlashcardList: Edytuje treść + "Zapisz"
@@ -171,7 +171,7 @@ sequenceDiagram
     participant API
     participant Database
     participant SRS
-    
+
     User->>ReviewQueue: Otwiera /reviews
     ReviewQueue->>useReviewQueue: Inicjalizacja
     useReviewQueue->>API: GET /api/reviews/queue?limit=20
@@ -180,11 +180,11 @@ sequenceDiagram
     API-->>useReviewQueue: { items: [...] }
     useReviewQueue-->>ReviewQueue: Aktualizacja stanu
     ReviewQueue-->>User: Wyświetla 15 fiszek
-    
+
     User->>ReviewQueue: Klika "Rozpocznij powtórki"
     ReviewQueue->>ReviewQueue: Zapisuje do localStorage
     ReviewQueue-->>User: Redirect do /reviews/session
-    
+
     User->>ReviewSession: Rozpoczyna sesję
     ReviewSession->>ReviewSession: Czyta localStorage
     ReviewSession-->>User: Pokazuje fiszkę 1/15 (przód)
@@ -193,9 +193,9 @@ sequenceDiagram
     User->>ReviewSession: Ocena "Good"
     ReviewSession->>ReviewSession: Zapisuje ocenę lokalnie
     ReviewSession-->>User: Następna fiszka...
-    
+
     Note over User,ReviewSession: Po 15 fiszkach
-    
+
     ReviewSession->>API: POST /api/reviews/submit
     API->>SRS: Oblicz nowe due_at dla każdej fiszki
     SRS-->>API: [{ id, due_at, interval_days }...]
@@ -266,9 +266,9 @@ sequenceDiagram
 ```typescript
 {
   reviews: Array<{
-    flashcard_id: string,
-    rating: 'again' | 'hard' | 'good' | 'easy'
-  }>
+    flashcard_id: string;
+    rating: "again" | "hard" | "good" | "easy";
+  }>;
 }
 ```
 
@@ -283,14 +283,14 @@ const useDataHook = (accessToken, query, enabled) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const fetch = async () => {
     if (!enabled || !accessToken) return;
-    
+
     setIsLoading(true);
     try {
       const response = await api.get(endpoint, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       setData(response.data);
     } catch (err) {
@@ -299,11 +299,11 @@ const useDataHook = (accessToken, query, enabled) => {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetch();
   }, [accessToken, query, enabled]);
-  
+
   return { data, error, isLoading, refresh: fetch };
 };
 ```
@@ -316,13 +316,11 @@ Dla lepszego UX, niektóre operacje aktualizują UI natychmiast:
 // useFlashcardList
 const updateItem = (updatedItem: FlashcardDTO) => {
   // Natychmiastowa aktualizacja UI
-  setData(prev => ({
+  setData((prev) => ({
     ...prev,
-    items: prev.items.map(item => 
-      item.id === updatedItem.id ? updatedItem : item
-    )
+    items: prev.items.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
   }));
-  
+
   // Jeśli API zwróci błąd, można zrobić rollback
 };
 ```
@@ -412,6 +410,7 @@ const fetchWithRetry = async (fn, maxRetries = 3) => {
 6. **Hook → UI**: UI re-renderuje się z nowymi danymi
 
 **Kluczowe zasady:**
+
 - Separation of concerns (UI, logika, API oddzielone)
 - Single source of truth (stan w hookach)
 - Immutable updates (React state)

@@ -118,7 +118,11 @@ const ErrorBanner = ({ message, status, onRetry }: ErrorBannerProps) => (
 const ReviewSession = ({ initialQueue }: ReviewSessionProps) => {
   const { session, isLoading: isSessionLoading } = useAuthSession();
   const query = useMemo<ReviewQueueQuery>(() => ({ limit: 50 }), []);
-  const { data, error, isLoading, refresh } = useReviewQueue(session?.access_token ?? null, query, !initialQueue.length);
+  const { data, error, isLoading, refresh } = useReviewQueue(
+    session?.access_token ?? null,
+    query,
+    !initialQueue.length
+  );
   const { isSubmitting, submit } = useReviewSubmit();
 
   const [queue, setQueue] = useState<FlashcardDTO[]>(initialQueue);
@@ -262,9 +266,7 @@ const ReviewSession = ({ initialQueue }: ReviewSessionProps) => {
       <Card>
         <CardHeader>
           <CardTitle>Brak fiszek do powtórek</CardTitle>
-          <CardDescription>
-            Twoja kolejka jest pusta. Wróć później lub dodaj nowe fiszki do nauki.
-          </CardDescription>
+          <CardDescription>Twoja kolejka jest pusta. Wróć później lub dodaj nowe fiszki do nauki.</CardDescription>
         </CardHeader>
         {storageEmptyMessage ? (
           <CardContent>

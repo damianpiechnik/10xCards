@@ -39,7 +39,10 @@ export const useCreateGenerationRequest = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = useCallback(
-    async (command: GenerationRequestCreateCommand, accessToken: string): Promise<GenerationRequestCreateResponseDTO> => {
+    async (
+      command: GenerationRequestCreateCommand,
+      accessToken: string
+    ): Promise<GenerationRequestCreateResponseDTO> => {
       setIsSubmitting(true);
 
       try {

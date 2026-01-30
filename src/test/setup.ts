@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { vi } from "vitest";
 
 // Mock globalny dla sessionStorage

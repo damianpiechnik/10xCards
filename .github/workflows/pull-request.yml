@@ -9,44 +9,75 @@ jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run ESLint
         run: npm run lint
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [lint]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v6
+        if: success()
+        with:
+          name: build-artifact
+          path: |
+            dist/
+            build/
+          retention-days: 7
 
   unit-test:
     name: Unit Tests
     runs-on: ubuntu-latest
-    needs: [lint]
-    
+    needs: [lint, build]
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run unit tests with coverage
         run: npm run test:coverage
-      
+
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v6
         if: always()
@@ -58,11 +89,11 @@ jobs:
   status-comment:
     name: Status Comment
     runs-on: ubuntu-latest
-    needs: [lint, unit-test]
+    needs: [lint, build, unit-test]
     if: always()
     permissions:
       pull-requests: write
-    
+
     steps:
       - name: Download coverage artifacts
         uses: actions/download-artifact@v7
@@ -70,16 +101,17 @@ jobs:
           name: unit-test-coverage
           path: coverage/
         continue-on-error: true
-      
+
       - name: Create PR comment
         uses: actions/github-script@v8
         with:
           script: |
             const lintStatus = '${{ needs.lint.result }}';
+            const buildStatus = '${{ needs.build.result }}';
             const unitTestStatus = '${{ needs.unit-test.result }}';
-            
+
             const statusEmoji = (status) => {
-              switch(status) {
+              switch (status) {
                 case 'success': return '✅';
                 case 'failure': return '❌';
                 case 'cancelled': return '⚠️';
@@ -87,23 +119,29 @@ jobs:
                 default: return '❓';
               }
             };
-            
-            const overallStatus = (lintStatus === 'success' && unitTestStatus === 'success') ? '✅ Wszystkie testy przeszły pomyślnie' : '❌ Niektóre testy nie powiodły się';
-            
+
+            const overallStatus =
+              lintStatus === 'success' &&
+              buildStatus === 'success' &&
+              unitTestStatus === 'success'
+                ? '✅ Wszystkie etapy CI zakończone sukcesem'
+                : '❌ Pipeline CI zakończony niepowodzeniem';
+
             const comment = `## 📊 Status CI dla Pull Request
-            
+
             ${overallStatus}
-            
+
             ### Wyniki poszczególnych jobów:
-            
+
             | Job | Status |
             |-----|--------|
             | Lintowanie kodu | ${statusEmoji(lintStatus)} ${lintStatus} |
+            | Build aplikacji | ${statusEmoji(buildStatus)} ${buildStatus} |
             | Testy jednostkowe | ${statusEmoji(unitTestStatus)} ${unitTestStatus} |
-            
+
             ---
             *Wygenerowano automatycznie przez GitHub Actions*`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

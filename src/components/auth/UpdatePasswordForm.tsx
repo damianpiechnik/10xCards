@@ -164,10 +164,7 @@ const UpdatePasswordForm = () => {
 
           {formError ? <FormErrorBanner title="Nie udało się ustawić hasła" message={formError} /> : null}
           {isSuccess ? (
-            <FormInfoBanner
-              title="Hasło zostało zaktualizowane"
-              message="Za chwilę przeniesiemy Cię do biblioteki."
-            />
+            <FormInfoBanner title="Hasło zostało zaktualizowane" message="Za chwilę przeniesiemy Cię do biblioteki." />
           ) : null}
 
           <Button type="submit" disabled={isSubmitDisabled} className="w-full">

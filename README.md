@@ -81,17 +81,20 @@ Setup:
 ## Available scripts
 
 Development:
+
 - `npm run dev` — start Astro dev server
 - `npm run build` — build the production bundle
 - `npm run preview` — preview the production build
 - `npm run astro` — run the Astro CLI
 
 Code Quality:
+
 - `npm run lint` — run ESLint
 - `npm run lint:fix` — fix ESLint issues
 - `npm run format` — format files with Prettier
 
 Testing:
+
 - `npm test` — run all unit tests
 - `npm test -- --watch` — run tests in watch mode
 - `npm run test:ui` — open Vitest UI in browser
